@@ -1,0 +1,2467 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="eLczdYlr8Jg8XiCqmIklaM">
+<head data-page-node-id="Yo7PUwhV4313FY6KA3adsc">
+<meta charset="UTF-8" data-page-node-id="AqUGojnb6bTvh9lEvasDDf">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" data-page-node-id="WpH0MuddFtwhowlfEWaSs5">
+<meta name="theme-color" content="#0284c7" data-page-node-id="CkvZ5NvpcsvfpqM8k4wQzo">
+<meta name="mobile-web-app-capable" content="yes" data-page-node-id="ocHzKXVWRb561IZnmIUB9b">
+<meta name="apple-mobile-web-app-capable" content="yes" data-page-node-id="0iAlGCWEFAfGPbIanYm9RN">
+<meta name="apple-mobile-web-app-status-bar-style" content="default" data-page-node-id="ZqBqCtKvuqti2ivlNXCRmt">
+<title>行程规划</title>
+<link rel="manifest" href="manifest.json" data-page-node-id="u06IcJGa06k1aEtVDXjlQJ">
+<link rel="icon" href="icon.svg" type="image/svg+xml" data-page-node-id="Z5vLIiNdNkMdDDUFvIATMq">
+<style>
+/* ===================== 设计变量：风光主题 ===================== */
+:root{
+  --sky-1:#38bdf8; --sky-2:#7dd3fc; --sky-3:#bae6fd; --sky-4:#e0f2fe;
+  --primary:#0284c7; --primary-d:#0369a1; --primary-l:#e0f2fe;
+  --teal:#0d9488; --teal-d:#115e59;
+  --sunset:#fb923c; --gold:#fbbf24;
+  --bg:#f3f8fc; --card:#fff;
+  --text:#0f172a; --muted:#64748b; --border:#e4ebf2;
+  --green:#15803d; --danger:#dc2626;
+  --r:16px; --r-sm:12px; --r-xs:9px;
+  --sh:0 1px 2px rgba(15,23,42,.05),0 10px 28px -14px rgba(3,60,100,.28);
+  --sh-sm:0 1px 2px rgba(15,23,42,.06),0 2px 8px -4px rgba(15,23,42,.12);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"HarmonyOS Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--text);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit;font-size:inherit;cursor:pointer;border:none;background:none;color:inherit;padding:0}
+input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+.hidden{display:none!important}
+
+/* ===================== 登录锁屏 ===================== */
+#login{position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;
+  padding:24px;overflow:hidden;
+  background:linear-gradient(180deg,#38bdf8 0%,#7dd3fc 38%,#bae6fd 70%,#e0f2fe 100%)}
+#login.out{animation:fadeOut .28s ease forwards}
+@keyframes fadeOut{to{opacity:0;visibility:hidden}}
+#login .scenery{position:absolute;left:0;right:0;bottom:0;width:100%;height:62%;min-height:300px}
+.login-wrap{position:relative;width:100%;max-width:370px;text-align:center}
+.login-badge{width:74px;height:74px;margin:0 auto 14px;border-radius:24px;
+  background:linear-gradient(150deg,#0ea5e9,#0d9488);color:#fff;font-size:34px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 16px 34px -12px rgba(3,105,161,.65)}
+.login-card{background:rgba(255,255,255,.86);border:1px solid rgba(255,255,255,.75);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-radius:24px;padding:26px 22px 22px;box-shadow:0 26px 60px -22px rgba(2,49,84,.5)}
+.login-card h1{margin:0 0 4px;font-size:21px;font-weight:700;letter-spacing:.5px}
+.login-card .sub{margin:0 0 20px;font-size:13px;color:var(--muted)}
+.pwd-box{position:relative}
+.pwd-box input{
+  width:100%;padding:14px 46px 14px 16px;border:1.5px solid var(--border);border-radius:14px;
+  background:#fff;outline:none;font-size:19px;letter-spacing:8px;text-align:center;
+  font-variant-numeric:tabular-nums;transition:border-color .15s,box-shadow .15s}
+.pwd-box input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(2,132,199,.12)}
+.pwd-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);
+  width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:17px;color:var(--muted)}
+.pwd-eye:active{background:#f1f5f9}
+.login-btn{width:100%;margin-top:14px;padding:13px;border-radius:14px;color:#fff;font-size:16px;font-weight:600;
+  background:linear-gradient(135deg,#0284c7,#0d9488);box-shadow:0 12px 24px -12px rgba(2,132,199,.7)}
+.login-btn:active{transform:translateY(1px);filter:brightness(.96)}
+.login-err{min-height:20px;margin-top:10px;font-size:13px;color:var(--danger)}
+.login-remember{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;
+  font-size:13px;color:var(--muted);cursor:pointer;user-select:none}
+.login-remember input{width:16px;height:16px;accent-color:var(--primary)}
+.login-tip{margin-top:14px;font-size:12px;color:rgba(255,255,255,.92);text-shadow:0 1px 3px rgba(2,49,84,.35)}
+.shake{animation:shake .38s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-9px)}
+  40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(4px)}}
+
+/* ===================== 外壳 ===================== */
+.app-shell{min-height:100vh;display:flex;flex-direction:column}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+
+/* ===================== 侧边栏 ===================== */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:84%;max-width:320px;z-index:70;
+  background:linear-gradient(180deg,#0b5f8f,#0e7490 45%,#0f766e);
+  color:#eaf6ff;display:flex;flex-direction:column;padding:calc(18px + env(safe-area-inset-top)) 14px calc(14px + env(safe-area-inset-bottom));
+  transform:translateX(-104%);transition:transform .26s ease;box-shadow:12px 0 34px -18px rgba(2,49,84,.8)}
+.sidebar.open{transform:none}
+.sidebar-mask{position:fixed;inset:0;background:rgba(2,32,54,.45);z-index:65;opacity:0;pointer-events:none;transition:opacity .26s}
+.sidebar-mask.show{opacity:1;pointer-events:auto}
+.side-head{display:flex;align-items:center;gap:10px;padding:0 4px 16px}
+.brand-icon{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.16);
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex:0 0 auto}
+.brand b{display:block;font-size:16px;font-weight:600;letter-spacing:.5px}
+.brand small{display:block;font-size:11px;opacity:.7;letter-spacing:1.4px}
+.side-new{width:100%;padding:11px;border-radius:12px;font-size:14.5px;font-weight:600;
+  background:rgba(255,255,255,.95);color:var(--primary-d);margin-bottom:14px}
+.side-new:active{background:#fff;transform:translateY(1px)}
+.side-label{font-size:11.5px;letter-spacing:1px;opacity:.65;padding:0 4px 8px;
+  display:flex;justify-content:space-between}
+.side-list{flex:1;overflow-y:auto;margin:0 -4px;padding:0 4px}
+.side-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:11px;cursor:pointer;margin-bottom:4px}
+.side-item:active,.side-item:hover{background:rgba(255,255,255,.13)}
+.side-item.active{background:rgba(255,255,255,.2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.side-item-main{flex:1;min-width:0}
+.side-item-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side-item-sub{font-size:11.5px;opacity:.72;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side-mini{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:12px;opacity:.75;flex:0 0 auto}
+.side-mini:active{background:rgba(255,255,255,.2)}
+.side-empty{font-size:12.5px;opacity:.7;padding:14px 6px;text-align:center}
+.side-foot{border-top:1px solid rgba(255,255,255,.16);margin-top:10px;padding-top:10px}
+.side-btn{display:flex;align-items:center;gap:9px;width:100%;padding:10px;border-radius:10px;
+  font-size:13.5px;color:#eaf6ff;text-align:left}
+.side-btn:active,.side-btn:hover{background:rgba(255,255,255,.13)}
+
+/* ===================== 顶部风光区 ===================== */
+.hero{position:relative;overflow:hidden;color:#fff;padding:0 16px 30px;
+  background:linear-gradient(155deg,#0284c7 0%,#0ea5e9 45%,#38bdf8 100%)}
+.hero-sun{position:absolute;right:26px;top:calc(14px + env(safe-area-inset-top));width:52px;height:52px;
+  border-radius:50%;background:radial-gradient(circle at 40% 40%,#fff7cc,#fcd34d);
+  box-shadow:0 0 0 12px rgba(252,211,77,.18),0 0 34px 12px rgba(253,224,71,.28)}
+.hero-cloud{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);filter:blur(1px)}
+.hero-c1{width:120px;height:26px;left:-10px;top:calc(52px + env(safe-area-inset-top));opacity:.45}
+.hero-c2{width:90px;height:20px;right:110px;top:calc(40px + env(safe-area-inset-top));opacity:.35}
+.hero .scenery{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:96px;opacity:.95}
+.hero-inner{position:relative;display:flex;align-items:center;gap:10px;
+  padding:calc(12px + env(safe-area-inset-top)) 0 0}
+.menu-btn{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto}
+.menu-btn:active{background:rgba(255,255,255,.32)}
+.hero-text{flex:1;min-width:0}
+.hero-text h1{margin:0;font-size:19px;font-weight:700;letter-spacing:.3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero-sub{margin:2px 0 0;font-size:12.5px;color:rgba(255,255,255,.86);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero-actions{display:flex;gap:6px;flex:0 0 auto}
+.hero-btn{width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;font-size:16px}
+.hero-btn:active{background:rgba(255,255,255,.34)}
+.hero-chips{position:relative;display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.chip-h{font-size:11.5px;padding:4px 11px;border-radius:20px;background:rgba(255,255,255,.2);
+  border:1px solid rgba(255,255,255,.22);white-space:nowrap}
+.chip-h b{font-weight:700;font-variant-numeric:tabular-nums}
+
+/* ===================== 内容区 ===================== */
+.content{padding:14px 12px 26px;width:100%;max-width:1120px;margin:0 auto;flex:1}
+.empty{text-align:center;padding:64px 20px;color:var(--muted)}
+.empty-icon{font-size:52px;margin-bottom:10px;opacity:.75}
+.small{font-size:13px}
+.muted{color:var(--muted)}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:14px;margin-bottom:10px}
+
+/* 行程卡片 */
+.trip-grid{display:grid;gap:12px;grid-template-columns:1fr}
+.trip-card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;
+  cursor:pointer;position:relative;transition:transform .16s,box-shadow .16s}
+.trip-card:hover{transform:translateY(-2px);box-shadow:0 16px 34px -16px rgba(3,60,100,.34)}
+.trip-cover{position:relative;height:78px;overflow:hidden;
+  background:linear-gradient(135deg,#0ea5e9,#0d9488)}
+.trip-cover svg{position:absolute;left:0;bottom:0;width:100%;height:100%}
+.trip-cover-date{position:absolute;left:12px;bottom:8px;color:#fff;font-size:12px;
+  text-shadow:0 1px 4px rgba(2,49,84,.5);font-variant-numeric:tabular-nums}
+.trip-cover-count{position:absolute;right:12px;bottom:8px;font-size:11.5px;color:#fff;
+  background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.3);
+  padding:2px 9px;border-radius:20px}
+.trip-body{padding:12px 13px 10px}
+.trip-body h2{margin:0 0 6px;font-size:16px;font-weight:600;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trip-meta{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+.trip-money{color:var(--primary);font-weight:700;font-variant-numeric:tabular-nums}
+.trip-foot{display:flex;gap:6px;justify-content:flex-end;padding:8px 10px;border-top:1px solid var(--border)}
+.mini-btn{padding:5px 10px;border-radius:9px;font-size:12.5px;color:var(--muted);background:#f1f5f9}
+.mini-btn:active{background:#e2e8f0}
+.mini-btn.danger{color:var(--danger)}
+
+/* 日期分区 */
+.day-section{margin-bottom:16px}
+.day-head{display:flex;align-items:baseline;justify-content:space-between;padding:0 4px 8px}
+.day-date{font-size:14.5px;font-weight:700;color:var(--primary-d)}
+.day-cost{font-size:12px;color:var(--green);font-variant-numeric:tabular-nums}
+.day-cards{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.day-cards::-webkit-scrollbar{display:none}
+.type-col{flex:0 0 124px;background:var(--card);border-radius:var(--r-sm);box-shadow:var(--sh-sm);
+  padding:8px;scroll-snap-align:start;display:flex;flex-direction:column}
+.type-col-head{display:flex;justify-content:space-between;align-items:center;gap:4px;
+  padding-bottom:6px;border-bottom:1px solid var(--border)}
+.type-col-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.type-col-add{width:20px;height:20px;border-radius:50%;background:var(--primary);color:#fff;font-size:13px;
+  line-height:1;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.type-col-add:active{transform:scale(.9)}
+.type-col-body{display:flex;flex-direction:column;gap:5px;margin-top:6px;flex:1}
+.type-col-empty{font-size:11px;color:var(--muted);text-align:center;padding:10px 0;opacity:.6}
+.mini-item{padding:6px 7px;border-radius:8px;background:#f6fafc;cursor:pointer;transition:background .15s;
+  border-left:3px solid var(--primary)}
+.mini-item:active{background:#e2e8f0}
+.mini-item.hotel{border-left-color:var(--teal)}
+.mini-item.spot{border-left-color:var(--sunset)}
+.mini-item.other{border-left-color:#94a3b8}
+.mini-title{font-size:11.5px;font-weight:600;line-height:1.35;word-break:break-word}
+.mini-sub{font-size:10.5px;color:var(--muted);margin-top:2px;line-height:1.35;word-break:break-word}
+.chip{font-size:11.5px;padding:2px 8px;border-radius:20px;background:#f1f5f9;color:#475569;white-space:nowrap}
+
+/* 清单视图 */
+.summary-head{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:16px;margin-bottom:14px}
+.summary-total{font-size:27px;font-weight:700;color:var(--primary);line-height:1.2}
+.summary-total small{font-size:13px;font-weight:500;color:var(--muted);margin-left:6px}
+.summary-breakdown{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:13px;color:var(--muted)}
+.summary-breakdown b{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
+.summary-meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;padding-top:10px;
+  border-top:1px solid var(--border);font-size:12.5px;color:var(--muted)}
+.summary-actions{display:flex;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.day-group{margin-bottom:16px}
+.day-group-head{display:flex;align-items:baseline;justify-content:space-between;padding:0 4px 8px;
+  font-size:14px;font-weight:700;color:var(--primary-d)}
+.day-group-head .cost{font-size:12px;font-weight:500;color:var(--green);font-variant-numeric:tabular-nums}
+.list-row{background:var(--card);border-radius:var(--r-sm);box-shadow:var(--sh-sm);
+  padding:11px 13px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start}
+.list-time{flex:0 0 44px;font-size:12px;color:var(--muted);padding-top:2px;font-variant-numeric:tabular-nums}
+.list-icon{flex:0 0 auto;font-size:16px;line-height:1.5}
+.list-main{flex:1;min-width:0}
+.list-title{font-size:14px;font-weight:600;margin:0 0 3px;word-break:break-word}
+.list-detail{font-size:12.5px;color:var(--muted);margin:0;word-break:break-word}
+.list-cost{flex:0 0 auto;font-size:13px;font-weight:700;color:var(--green);padding-top:1px;
+  font-variant-numeric:tabular-nums}
+
+/* 按钮 */
+.btn{padding:7px 11px;border-radius:10px;font-size:13px;background:#eef2f7;color:#334155;
+  display:inline-flex;align-items:center;justify-content:center;gap:5px}
+.btn:active{background:#e2e8f0}
+.btn.primary{background:linear-gradient(135deg,var(--primary),var(--teal));color:#fff;
+  box-shadow:0 8px 18px -10px rgba(2,132,199,.8)}
+.btn.primary:active{filter:brightness(.95)}
+.btn.danger{color:var(--danger)}
+.btn.block{width:100%}
+.fab{position:fixed;right:18px;bottom:calc(20px + env(safe-area-inset-bottom));width:56px;height:56px;
+  border-radius:50%;background:linear-gradient(135deg,#0284c7,#0d9488);color:#fff;font-size:28px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 24px -8px rgba(2,132,199,.65);z-index:40}
+.fab:active{transform:scale(.94)}
+
+/* ===================== 弹窗 ===================== */
+.modal-mask{position:fixed;inset:0;background:rgba(2,32,54,.45);z-index:100;
+  display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:560px;background:#fff;border-radius:20px 20px 0 0;max-height:92vh;
+  display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom);animation:slideUp .22s ease}
+@keyframes slideUp{from{transform:translateY(26px);opacity:.6}to{transform:none;opacity:1}}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:14px 16px;border-bottom:1px solid var(--border);flex:0 0 auto}
+.sheet-head h3{margin:0;font-size:16px;font-weight:600}
+.sheet-head button{font-size:15px;color:var(--muted)}
+.sheet-head button.primary-text{color:var(--primary);font-weight:600}
+.sheet-body{padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.nav-option{width:100%;padding:14px 16px;border-radius:12px;background:#f8fafc;font-size:15px;
+  display:flex;align-items:center;gap:14px;margin-bottom:8px;text-align:left;border:1px solid var(--border)}
+.nav-option:active{background:#eef2f7}
+.nav-option:last-child{margin-bottom:0}
+.nav-icon{font-size:24px;line-height:1}
+.nav-label{flex:1}
+.nav-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+.field input[type=text],.field input[type=date],.field input[type=time],.field input[type=number],
+.field input[type=password],.field select,.field textarea{
+  width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:11px;background:#f8fafc;
+  outline:none;transition:border-color .15s,background .15s;font-variant-numeric:tabular-nums}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--primary);background:#fff}
+.field textarea{resize:vertical;min-height:64px}
+.row{display:flex;gap:10px}
+.row>.field{flex:1;min-width:0}
+.seg{display:flex;gap:6px;background:#eef2f7;padding:4px;border-radius:12px}
+.seg-btn{flex:1;padding:8px 0;border-radius:9px;font-size:13px;color:var(--muted);text-align:center}
+.seg-btn.active{background:#fff;color:var(--primary);font-weight:600;box-shadow:0 1px 3px rgba(15,23,42,.12)}
+.app-btn-row{display:flex;gap:8px;margin-top:8px}
+.ctrip-btn,.map-btn{flex:1;padding:11px 8px;border-radius:11px;font-size:13.5px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:5px}
+.ctrip-btn{background:#e0f2fe;color:#0369a1}
+.ctrip-btn:active{background:#bae6fd}
+.map-btn{background:#e6f7ee;color:#127a4a}
+.map-btn:active{background:#c8ecd8}
+.launch-tip{
+  position:fixed;left:12px;right:12px;
+  bottom:calc(16px + env(safe-area-inset-bottom));
+  z-index:200;max-width:520px;margin:0 auto;
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 8px 28px rgba(15,23,42,.18);padding:14px;
+}
+.launch-tip h4{margin:0 0 6px;font-size:14.5px;font-weight:600}
+.launch-tip p{margin:0 0 12px;font-size:12.5px;color:var(--muted);line-height:1.55}
+.launch-tip-actions{display:flex;gap:8px;flex-wrap:wrap}
+.launch-tip-actions .btn{flex:1;justify-content:center;padding:9px 8px;min-width:96px}
+.hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.55}
+.ctrip-hint{font-size:11.5px;color:var(--muted);text-align:center;margin-top:6px}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translate(-50%,14px);
+  background:rgba(15,23,42,.92);color:#fff;font-size:13px;padding:10px 16px;border-radius:12px;z-index:200;
+  opacity:0;pointer-events:none;transition:.22s;max-width:80vw;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ===================== 电脑端 ===================== */
+@media(min-width:900px){
+  body{font-size:15px}
+  .app-shell{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:100vh}
+  .sidebar{position:sticky;top:0;height:100vh;transform:none;width:auto;max-width:none;box-shadow:none}
+  .sidebar-mask{display:none!important}
+  .menu-btn{display:none}
+  .hero{padding:0 26px 34px;border-radius:0 0 28px 28px}
+  .hero-text h1{font-size:25px}
+  .hero-sub{font-size:13.5px}
+  .hero .scenery{height:120px}
+  .content{padding:18px 26px 40px}
+  .trip-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .day-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;overflow:visible;padding-bottom:2px}
+  .type-col{flex:1 1 0;min-width:0}
+  .day-section{margin-bottom:20px}
+  .fab{right:32px;bottom:32px}
+  .modal-mask{align-items:center}
+  .sheet{border-radius:20px;max-height:88vh}
+}
+@media(min-width:1400px){ .trip-grid{grid-template-columns:repeat(3,minmax(0,1fr))} }
+
+/* ===================== PDF 打印容器 ===================== */
+#print-root{position:fixed;left:-12000px;top:0;width:794px;background:#fff;z-index:-1}
+.pdf-doc{width:794px;background:#fff;color:#0f172a;padding:34px 40px 40px;
+  font-family:"PingFang SC","Microsoft YaHei","HarmonyOS Sans SC",sans-serif;font-size:12px;line-height:1.6}
+.pdf-doc *{box-sizing:border-box}
+.pdf-brand{font-size:11px;letter-spacing:2px;color:#0d9488;font-weight:700;margin-bottom:8px}
+.pdf-doc h1{margin:0 0 4px;font-size:24px;font-weight:700;color:#0f172a}
+.pdf-meta{font-size:12px;color:#64748b;margin-bottom:16px}
+.pdf-summary{border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px;margin-bottom:18px;
+  background:#f8fafc}
+.pdf-total{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+.pdf-total span{font-size:12px;color:#64748b}
+.pdf-total b{font-size:26px;color:#0284c7;font-weight:700}
+.pdf-bd{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;color:#475569;border-top:1px solid #e2e8f0;padding-top:8px}
+.pdf-bd b{color:#0f172a}
+.pdf-day{margin-bottom:16px;break-inside:avoid;page-break-inside:avoid}
+.pdf-day-head{display:flex;justify-content:space-between;align-items:baseline;
+  border-bottom:2px solid #0284c7;padding-bottom:5px;margin-bottom:8px}
+.pdf-day-head b{font-size:14px;color:#0284c7}
+.pdf-day-head span{font-size:11px;color:#15803d}
+.pdf-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px dashed #e2e8f0;break-inside:avoid}
+.pdf-time{flex:0 0 46px;font-size:11px;color:#64748b;padding-top:1px}
+.pdf-ico{flex:0 0 18px;font-size:13px}
+.pdf-main{flex:1;min-width:0}
+.pdf-title{font-size:12.5px;font-weight:600}
+.pdf-detail{font-size:11px;color:#64748b;margin-top:1px;word-break:break-word}
+.pdf-cost{flex:0 0 auto;font-size:12px;font-weight:700;color:#15803d}
+.pdf-foot{margin-top:18px;padding-top:10px;border-top:1px solid #e2e8f0;font-size:11px;color:#94a3b8;
+  display:flex;justify-content:space-between}
+.pdf-empty{color:#94a3b8;font-size:12px;padding:8px 0}
+
+@media print{
+  #app,#login,#modal-root,.fab,#toast{display:none!important}
+  #print-root{position:static!important;left:auto!important;width:auto!important;z-index:auto!important}
+  @page{size:A4;margin:12mm}
+}
+</style>
+</head>
+<body data-page-node-id="5g0qeh9HhZovT0PNEYgjB0">
+
+<!-- ============ 登录锁屏 ============ -->
+<div id="login" class="hidden" data-page-node-id="BIIQTSIyZONrKygdQCwPSL">
+  <svg class="scenery" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true" data-page-node-id="stoamKn7jLB1JvY5d6vjFi">
+    <defs data-page-node-id="giSjIqm8vtw5pvQ0h2zk4r">
+      <linearGradient id="lgSky" x1="0" y1="0" x2="0" y2="1" data-page-node-id="fKbhtaVgn1ZKQY0lLR3Oz0">
+        <stop offset="0%" stop-color="#38bdf8" data-page-node-id="WcBhS8SpyteupbPj1rfwKz"/><stop offset="55%" stop-color="#bae6fd" data-page-node-id="JbNEbSGuG0xd4Xfd8fD65R"/><stop offset="100%" stop-color="#e0f2fe" data-page-node-id="uNgRuptvPY47m3PgHy9WCu"/>
+      </linearGradient>
+      <linearGradient id="lgFar" x1="0" y1="0" x2="0" y2="1" data-page-node-id="qSPrWZZJw05UrxmITDM63N">
+        <stop offset="0%" stop-color="#94a3b8" data-page-node-id="QoopQEKrFTVYUZ8uASuUix"/><stop offset="100%" stop-color="#cbd5e1" data-page-node-id="ZwNh1qWkSaSddLmme1nwHd"/>
+      </linearGradient>
+      <linearGradient id="lgMid" x1="0" y1="0" x2="0" y2="1" data-page-node-id="HY5D5fQV26LGM1M7LOwGio">
+        <stop offset="0%" stop-color="#0f766e" data-page-node-id="uWjeKFVM5kPGqs6AdUBVJ0"/><stop offset="100%" stop-color="#115e59" data-page-node-id="a0q3l8YsPwnCr24BLhYjXq"/>
+      </linearGradient>
+      <linearGradient id="lgNear" x1="0" y1="0" x2="0" y2="1" data-page-node-id="BS7MpmAEfUlVkMWr2vRcuk">
+        <stop offset="0%" stop-color="#134e4a" data-page-node-id="ZE1r76FEIKx96FCyCFqWhh"/><stop offset="100%" stop-color="#0b3b39" data-page-node-id="7QvnfxhtLFfTca0q3RD0r2"/>
+      </linearGradient>
+      <linearGradient id="lgWater" x1="0" y1="0" x2="0" y2="1" data-page-node-id="iJpA0yBPBGE2bC10kVS2Xo">
+        <stop offset="0%" stop-color="#7dd3fc" data-page-node-id="yjtRpe59OSKSGCy8bmsOLK"/><stop offset="100%" stop-color="#38bdf8" data-page-node-id="jADDDFFnfrIEzr3foWH8Dn"/>
+      </linearGradient>
+    </defs>
+    <rect width="1200" height="520" fill="url(#lgSky)" data-page-node-id="VLFBOPjLeQ2GfASmfShHkj"/>
+    <circle cx="952" cy="118" r="86" fill="#fef3c7" opacity=".35" data-page-node-id="TBhcqf6xSLv4PuYZTCvdQv"/>
+    <circle cx="952" cy="118" r="56" fill="#fde68a" data-page-node-id="VX8hxyrGnGFgBS5JIghBmH"/>
+    <g fill="#fff" opacity=".9" data-page-node-id="nMOyOoZh4qHdrJSHEZBLcX">
+      <ellipse cx="250" cy="112" rx="76" ry="27" data-page-node-id="tUdzgCe2Y4jq44YPiLEY1q"/><ellipse cx="312" cy="99" rx="54" ry="22" data-page-node-id="t3vgInMCuxgeqG1MaNmbel"/><ellipse cx="192" cy="103" rx="46" ry="18" data-page-node-id="kaDtvBW1pkkivyyA9aXRsD"/>
+      <ellipse cx="640" cy="168" rx="58" ry="20" data-page-node-id="86z28OIUgu9prf8xrYAWHo"/><ellipse cx="690" cy="158" rx="42" ry="17" data-page-node-id="OYPEaGpAWznfvNLzc3Dn82"/>
+    </g>
+    <g stroke="#0f172a" fill="none" stroke-width="3" opacity=".35" stroke-linecap="round" data-page-node-id="iWioKYEh6m2G6MmMnipPmd">
+      <path d="M410 148 q11 -11 22 0 q11 -11 22 0" data-page-node-id="RRtNly4fnQOM7nZK3Vmfxo"/>
+      <path d="M470 186 q9 -9 18 0 q9 -9 18 0" data-page-node-id="8RNg7vO5KMzjGH4NhDnlN2"/>
+    </g>
+    <path d="M0 336 L150 252 L268 306 L392 224 L520 322 L668 262 L820 332 L1000 258 L1200 330 L1200 520 L0 520 Z" fill="url(#lgFar)" opacity=".65" data-page-node-id="1fogR8dDk1fE43GyZbWePm"/>
+    <path d="M0 386 L180 306 L332 376 L470 292 L624 384 L784 322 L944 392 L1090 310 L1200 372 L1200 520 L0 520 Z" fill="url(#lgMid)" data-page-node-id="k2fdnZaX8fyC6VXOufIqhb"/>
+    <rect x="0" y="424" width="1200" height="96" fill="url(#lgWater)" opacity=".5" data-page-node-id="mHifmDIxDflSLfj6x5FBRA"/>
+    <path d="M0 476 L210 424 L430 474 L648 428 L868 476 L1082 432 L1200 470 L1200 520 L0 520 Z" fill="url(#lgNear)" data-page-node-id="R7rbZXr7DjqtRz0OjKuXiy"/>
+    <g fill="#0b3b39" data-page-node-id="dW7CPhv9wfCvN1kAfRKFiC">
+      <path d="M150 476 l16 -34 l16 34 z" data-page-node-id="D4L8p7JXEL4Nakp4Jl0jeU"/><path d="M190 480 l13 -28 l13 28 z" data-page-node-id="22udwsmcdUpn24nXu1YQwo"/>
+      <path d="M980 470 l15 -32 l15 32 z" data-page-node-id="nvYK2Rt6qNwSq9oWj6Xipy"/><path d="M1018 474 l12 -26 l12 26 z" data-page-node-id="a6EiFFLNdBncCVNgLD6JCB"/>
+    </g>
+  </svg>
+
+  <div class="login-wrap" data-page-node-id="YftBD5suL3uRmYha05Pb6o">
+    <div class="login-badge" data-page-node-id="p86Zsz0HV092mnKUPLvI0m">🧭</div>
+    <div class="login-card" data-page-node-id="t0FgaVJUeuysWrrun7p0qt">
+      <h1 data-page-node-id="m8hVv1P3dwTSkgoCLo7EuC">行程规划</h1>
+      <p class="sub" data-page-node-id="ZXXInlIP5PUFOrW6cQr7Xp">请输入访问密码，开启你的旅程</p>
+      <div class="pwd-box" data-page-node-id="ftxRQ94HiakCZWPRXYSWlf">
+        <input id="pwd" type="password" inputmode="numeric" autocomplete="off"
+               maxlength="12" placeholder="••••" aria-label="访问密码" data-page-node-id="JB0QiUGiRloK0CEnSEd7GE">
+        <button class="pwd-eye" id="pwd-eye" type="button" title="显示/隐藏" data-page-node-id="dCE1nqtIU51AtX7vLgsGTc">👁️</button>
+      </div>
+      <div class="login-err" id="pwd-err" data-page-node-id="yPfeuPexRKWBRpOrLtrBLS"></div>
+      <button class="login-btn" id="pwd-go" type="button" data-page-node-id="xEhA09L9dM7FvcrDdaLydC">进 入</button>
+      <label class="login-remember" data-page-node-id="hDr1hBQdFRMITxsAagsOxd"><input type="checkbox" id="pwd-remember" checked data-page-node-id="NtIxl0gpcmbPxnSBanzxmg">记住登录（7 天免密）</label>
+    </div>
+    <div class="login-tip" data-page-node-id="PvhB27Y2kFFXxuEUIMhPgk">🔒 本机私有数据 · 访问密码：8888</div>
+  </div>
+</div>
+
+<div id="app" data-page-node-id="7N1bwBQaGhlPHDErMjVv0D"></div>
+<div id="modal-root" data-page-node-id="pn23zpV6TAdAjsh1h3wyf9"></div>
+<div id="launch-tip" class="launch-tip hidden"></div>
+<div id="print-root" data-page-node-id="8aOfVFlWaUfjWJjBseaHAm"></div>
+<div id="toast" data-page-node-id="GqFedjd9rhdu0FoDPByHEI"></div>
+
+<script>
+/* ==================== 工具 ==================== */
+const $ = s => document.querySelector(s);
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
+  c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const WEEK = ['周日','周一','周二','周三','周四','周五','周六'];
+const TYPE_LABEL = { transport:'出行', hotel:'住宿', spot:'景点', other:'其他' };
+
+function fmtDate(d){
+  if(!d) return '未安排日期';
+  const dt = new Date(d + 'T00:00:00');
+  if(isNaN(dt.getTime())) return d;
+  return `${dt.getMonth()+1}月${dt.getDate()}日 ${WEEK[dt.getDay()]}`;
+}
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function isMobile(){
+  return /android|iphone|ipad|ipod|harmony|mobile/i.test(navigator.userAgent);
+}
+function openUrl(url){
+  if(!url) return;
+  try {
+    const w = window.open(url, '_blank', 'noopener');
+    if(w) return;
+  } catch(e){}
+  const a = document.createElement('a');
+  a.href = url; a.target = '_blank'; a.rel = 'noopener';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ==================== 运行环境识别 ==================== */
+function envLabel(){
+  const E = env();
+  if(E.wechat)    return '微信内置浏览器';
+  if(E.ios)       return 'iOS' + (E.standalone ? '（全屏）' : '');
+  if(E.android)   return /harmony/i.test(E.ua) ? '鸿蒙 / Android' : 'Android';
+  return '桌面浏览器';
+}
+function env(){
+  const ua = navigator.userAgent || '';
+  const ios = /iphone|ipad|ipod/i.test(ua);
+  const android = /android|harmony/i.test(ua);
+  let standalone = false;
+  try {
+    standalone = !!(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
+      || window.navigator.standalone === true;
+  } catch(e){}
+  return {
+    ua: ua, ios: ios, android: android,
+    mobile: android || ios || /mobile/i.test(ua),
+    wechat: /micromessenger/i.test(ua),
+    standalone: standalone
+  };
+}
+const PKG_AMAP  = 'com.autonavi.minimap';
+/* 携程 Android 包名：应用市场标注为 ctrip.android.view（老版本未带 com. 前缀），
+   不同版本两种写法都可能存在，逐个尝试 */
+const PKG_CTRIP = ['ctrip.android.view', 'com.ctrip.android.view'];
+
+/* Android intent：把 path 交给指定 APP 打开。
+   scheme 可以是 https（APP 需支持 App Links）或 APP 自有协议（如 ctrip）。
+   fallbackUrl 为空时匹配不到就什么都不做，方便继续尝试下一种方式。 */
+function buildIntent(scheme, pathOrUrl, pkg, fallbackUrl){
+  let pth = String(pathOrUrl || '');
+  const m = /^[a-z][a-z0-9+.\-]*:\/\//i.exec(pth);
+  if(m) pth = pth.slice(m[0].length);
+  let s = 'intent://' + pth + '#Intent;scheme=' + (scheme || 'https') + ';';
+  if(pkg) s += 'package=' + pkg + ';';
+  if(fallbackUrl) s += 'S.browser_fallback_url=' + encodeURIComponent(fallbackUrl) + ';';
+  return s + 'end';
+}
+function goUrl(url){
+  if(!url) return;
+  try { window.location.href = url; } catch(e){ openUrl(url); }
+}
+
+/* 统一唤起：按 steps 逐级尝试，任一步让页面进入后台即视为成功。
+   fallback:'auto' → 全失败后自动开网页（高德网页本身会拉起 APP，适用）
+   fallback:'ask'  → 全失败后弹提示条由用户决定（携程用，避免网页盖掉唤起） */
+function launchApp(opt){
+  const E = env();
+  const webUrl = opt.webUrl || '';
+  const appUrl = opt.appUrl || '';
+  const target = webUrl || appUrl;
+  if(!target) return false;
+
+  /* 桌面 / 微信：自定义协议一律被拦，直接开网页 */
+  if(!E.mobile || E.wechat){ openUrl(target); return false; }
+
+  let steps = (opt.steps && opt.steps.length) ? opt.steps.slice() : null;
+  if(!steps){
+    steps = [];
+    if(E.android) steps.push(buildIntent('https', webUrl || appUrl, opt.pkg || '', webUrl));
+    else if(appUrl) steps.push(appUrl);
+  }
+  if(!steps.length){ openUrl(target); return false; }
+
+  let left = false, i = 0;
+  const mark = function(){ left = true; };
+  const evOn = function(){
+    document.addEventListener('visibilitychange', mark);
+    window.addEventListener('pagehide', mark);
+    window.addEventListener('blur', mark);
+  };
+  const evOff = function(){
+    document.removeEventListener('visibilitychange', mark);
+    window.removeEventListener('pagehide', mark);
+    window.removeEventListener('blur', mark);
+  };
+  evOn();
+
+  const gap = opt.gap || (E.android ? 1200 : 1600);
+  const tick = function(){
+    if(left || document.hidden){ evOff(); return; }
+    if(i >= steps.length){
+      evOff();
+      if(opt.fallback === 'ask') showLaunchTip(opt);
+      else if(webUrl) openUrl(webUrl);
+      return;
+    }
+    goUrl(steps[i++]);
+    setTimeout(tick, gap);
+  };
+  tick();
+  return true;
+}
+
+/* 唤起失败提示条：不再自动开网页，避免把 APP 唤起过程盖掉 */
+function showLaunchTip(opt){
+  const box = document.getElementById('launch-tip');
+  if(!box) return;
+  const webUrl = opt.webUrl || '';
+  box._text = opt.tipCopy || '';
+  box.innerHTML =
+      '<h4>' + esc(opt.tipTitle || '没能唤起 APP') + '</h4>'
+    + '<p>' + esc(opt.tipText || '') + '</p>'
+    + '<div class="launch-tip-actions">'
+    +   (webUrl ? '<button class="btn primary" data-action="tip-web" data-url="' + esc(webUrl) + '">🌐 用网页打开</button>' : '')
+    +   (box._text ? '<button class="btn" data-action="tip-copy">📋 再复制一次</button>' : '')
+    +   '<button class="btn ghost" data-action="tip-close">关闭</button>'
+    + '</div>';
+  box.classList.remove('hidden');
+  clearTimeout(showLaunchTip._t);
+  showLaunchTip._t = setTimeout(hideLaunchTip, 20000);
+}
+function hideLaunchTip(){
+  const box = document.getElementById('launch-tip');
+  if(box){ box.classList.add('hidden'); box.innerHTML = ''; box._text = ''; }
+}
+/* 兼容旧调用 */
+function openCtripUrl(webUrl, it){
+  if(!webUrl){ toast('链接无效，请到「设置」检查模板'); return; }
+  launchCtrip(it || { type:'hotel' }, webUrl);
+}
+function openAppOrWeb(appUrl, webUrl, pkg){
+  launchApp({ appUrl: appUrl, webUrl: webUrl, pkg: pkg });
+}
+function fmtMoney(n){
+  const v = Number(n) || 0;
+  if(!v) return '¥0';
+  return '¥' + v.toLocaleString('zh-CN', { maximumFractionDigits: 2 });
+}
+function addDays(dateStr, n){
+  if(!dateStr) return '';
+  const d = new Date(dateStr + 'T00:00:00');
+  if(isNaN(d.getTime())) return '';
+  d.setDate(d.getDate() + n);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function nights(it){
+  if(!it.checkIn || !it.checkOut) return 1;
+  const a = new Date(it.checkIn + 'T00:00:00');
+  const b = new Date(it.checkOut + 'T00:00:00');
+  if(isNaN(a.getTime()) || isNaN(b.getTime())) return 1;
+  const n = Math.round((b - a) / 86400000);
+  return n > 0 ? n : 1;
+}
+function itemCost(it){
+  if(!it) return 0;
+  if(it.type === 'hotel'){
+    const p = Number(it.pricePerNight) || 0;
+    return p * nights(it);
+  }
+  return Number(it.cost) || 0;
+}
+function calcStats(trip){
+  const s = { transport:0, hotel:0, spot:0, other:0, total:0 };
+  (trip.items || []).forEach(it => {
+    const c = itemCost(it);
+    s.total += c;
+    if(s[it.type] !== undefined) s[it.type] += c;
+  });
+  return s;
+}
+function byTime(a, b){
+  if(!a.time && !b.time) return 0;
+  if(!a.time) return 1;
+  if(!b.time) return -1;
+  return a.time < b.time ? -1 : a.time > b.time ? 1 : 0;
+}
+function buildDateRange(trip){
+  if(!trip || !trip.startDate) return [];
+  const end = trip.endDate && trip.endDate >= trip.startDate ? trip.endDate : trip.startDate;
+  const out = [];
+  let d = trip.startDate, n = 0;
+  while(d && d <= end && n < 200){ out.push(d); d = addDays(d, 1); n++; }
+  return out;
+}
+function guessArrival(trip){
+  if(!trip) return { city:'', date:'' };
+  const list = (trip.items || [])
+    .filter(i => i.type === 'transport' && i.to)
+    .slice()
+    .sort((a, b) => {
+      const da = a.date || '9999-99-99', db = b.date || '9999-99-99';
+      if(da !== db) return da < db ? -1 : 1;
+      const ta = a.time || '99:99', tb = b.time || '99:99';
+      return ta < tb ? -1 : ta > tb ? 1 : 0;
+    });
+  const first = list[0];
+  if(first) return { city: first.to || '', date: first.date || '' };
+  return { city:'', date: trip.startDate || '' };
+}
+function guessDeparture(trip, date){
+  if(!trip || !date) return '';
+  const hotels = (trip.items || [])
+    .filter(i => {
+      if(i.type !== 'hotel') return false;
+      const d = i.checkIn || i.date;
+      return d && d < date;
+    })
+    .sort((a, b) => {
+      const da = a.checkIn || a.date, db = b.checkIn || b.date;
+      return db < da ? -1 : db > da ? 1 : 0;
+    });
+  const h = hotels[0];
+  return h ? (h.city || h.title || '') : '';
+}
+function backfillHotelCities(trip, transport){
+  if(!trip || !transport || transport.type !== 'transport') return 0;
+  const to = transport.to || '';
+  const tDate = transport.date || '';
+  if(!to || !tDate) return 0;
+  const nextDate = (trip.items || [])
+    .filter(i => i.type === 'transport' && i.id !== transport.id && i.date && i.date > tDate)
+    .map(i => i.date).sort()[0] || '9999-99-99';
+  let n = 0;
+  trip.items.forEach(it => {
+    if(it.type !== 'hotel') return;
+    const d = it.checkIn || it.date || '';
+    if(!d) return;
+    if(d >= tDate && d < nextDate && !it.city){ it.city = to; n++; }
+  });
+  return n;
+}
+function copyText(text){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    return navigator.clipboard.writeText(text);
+  }
+  return new Promise((resolve, reject) => {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed'; ta.style.left = '-9999px'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      ok ? resolve() : reject(new Error('execCommand 失败'));
+    } catch(e){ reject(e); }
+  });
+}
+function toast(msg){
+  const el = $('#toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+/* ==================== 风光插画 ==================== */
+function scenerySvg(pfx){
+  return `<svg class="scenery" viewBox="0 0 1200 200" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="${pfx}a" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#5eead4" stop-opacity=".5"/><stop offset="100%" stop-color="#2dd4bf" stop-opacity=".2"/>
+      </linearGradient>
+      <linearGradient id="${pfx}b" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#0e7490" stop-opacity=".85"/><stop offset="100%" stop-color="#0891b2" stop-opacity=".7"/>
+      </linearGradient>
+      <linearGradient id="${pfx}c" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#0f766e"/><stop offset="100%" stop-color="#115e59"/>
+      </linearGradient>
+    </defs>
+    <path d="M0 132 L120 74 L214 116 L322 44 L432 116 L520 84 L640 134 Z" fill="url(#${pfx}a)"/>
+    <path d="M0 156 L160 96 L282 142 L404 84 L524 140 L622 108 L764 158 Z" fill="url(#${pfx}b)"/>
+    <path d="M744 158 L900 92 L1012 138 L1108 100 L1200 152 L1200 200 L744 200 Z" fill="url(#${pfx}c)"/>
+    <path d="M0 178 L200 136 L382 182 L560 142 L760 186 L962 146 L1200 184 L1200 200 L0 200 Z" fill="#0a3b3c" opacity=".9"/>
+  </svg>`;
+}
+
+/* ==================== 登录 ==================== */
+const PASSWORD = '8888';
+const AUTH_SS = 'tripPlanner.auth.session';
+const AUTH_LS = 'tripPlanner.auth.remember';
+
+function checkAuth(){
+  try {
+    if(sessionStorage.getItem(AUTH_SS)) return true;
+    const raw = localStorage.getItem(AUTH_LS);
+    if(raw){
+      const d = JSON.parse(raw);
+      if(d && d.until && d.until > Date.now()) return true;
+      localStorage.removeItem(AUTH_LS);
+    }
+  } catch(e){}
+  return false;
+}
+function setAuth(remember){
+  try {
+    sessionStorage.setItem(AUTH_SS, '1');
+    if(remember) localStorage.setItem(AUTH_LS, JSON.stringify({ until: Date.now() + 7*86400000 }));
+    else localStorage.removeItem(AUTH_LS);
+  } catch(e){}
+}
+function lockApp(){
+  try { sessionStorage.removeItem(AUTH_SS); localStorage.removeItem(AUTH_LS); } catch(e){}
+  $('#app').innerHTML = '';
+  $('#modal-root').innerHTML = '';
+  showLogin();
+}
+function showLogin(){
+  const el = $('#login');
+  el.classList.remove('out','hidden');
+  $('#pwd').value = '';
+  $('#pwd-err').textContent = '';
+  setTimeout(() => { try { $('#pwd').focus(); } catch(e){} }, 60);
+}
+function tryLogin(){
+  const v = ($('#pwd').value || '').trim();
+  if(v === PASSWORD){
+    setAuth($('#pwd-remember').checked);
+    const el = $('#login');
+    el.classList.add('out');
+    setTimeout(() => el.classList.add('hidden'), 280);
+    if(!$('#app').innerHTML.trim()) render();
+  } else {
+    $('#pwd-err').textContent = '密码不正确，请重试';
+    const card = $('.login-card');
+    card.classList.remove('shake');
+    void card.offsetWidth;
+    card.classList.add('shake');
+    $('#pwd').value = '';
+    try { $('#pwd').focus(); } catch(e){}
+  }
+}
+
+/* ==================== 存储 ==================== */
+const STORE_KEY = 'tripPlanner.v1';
+const DEFAULTS = () => ({
+  trips: [],
+  settings: {
+    flightTpl: 'https://m.ctrip.com/webapp/flight/search?departCity={from}&arriveCity={to}&departDate={date}',
+    trainTpl:  'https://m.ctrip.com/webapp/train/list?from={from}&to={to}&date={date}',
+    hotelTpl:  'https://m.ctrip.com/webapp/hotel/list?city={city}&checkin={checkIn}&checkout={checkOut}',
+    ctripScheme: 'ctrip://'
+  }
+});
+let DB = (() => {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw){
+      const d = JSON.parse(raw);
+      return Object.assign(DEFAULTS(), d,
+        { settings: Object.assign(DEFAULTS().settings, d.settings || {}) });
+    }
+  } catch(e){}
+  return DEFAULTS();
+})();
+function save(){
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(DB)); }
+  catch(e){ alert('保存失败：' + e.message); }
+}
+const getTrip = id => DB.trips.find(t => t.id === id);
+const sortedTrips = () => [...DB.trips].sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+
+let view = { name:'list', tripId:null };
+let modal = null;
+let drawerOpen = false;
+
+/* ==================== 渲染框架 ==================== */
+function render(){
+  if(!checkAuth()){ showLogin(); return; }
+  $('#app').innerHTML =
+      view.name === 'list'    ? viewList()
+    : view.name === 'trip'    ? viewTrip()
+    :                           viewSummary();
+  renderModal();
+  if(drawerOpen) toggleDrawer(false);
+}
+function toggleDrawer(open){
+  drawerOpen = open;
+  const sb = $('.sidebar'), mk = $('.sidebar-mask');
+  if(sb) sb.classList.toggle('open', open);
+  if(mk) mk.classList.toggle('show', open);
+}
+function shell(hero, inner, opts){
+  opts = opts || {};
+  return `
+  <div class="app-shell">
+    ${sidebar()}
+    <div class="sidebar-mask${drawerOpen ? ' show' : ''}" data-action="close-drawer"></div>
+    <main class="main">
+      <header class="hero">
+        <div class="hero-sun"></div>
+        <div class="hero-cloud hero-c1"></div>
+        <div class="hero-cloud hero-c2"></div>
+        <div class="hero-inner">
+          <button class="menu-btn" data-action="open-drawer" title="行程列表">☰</button>
+          <div class="hero-text">
+            <h1>${esc(hero.title)}</h1>
+            ${hero.sub ? `<p class="hero-sub">${esc(hero.sub)}</p>` : ''}
+          </div>
+          <div class="hero-actions">${hero.actions || ''}</div>
+        </div>
+        ${hero.chips ? `<div class="hero-chips">${hero.chips}</div>` : ''}
+        ${scenerySvg('hero')}
+      </header>
+      <div class="content">${inner}</div>
+    </main>
+  </div>
+  ${opts.fab ? `<button class="fab" data-action="${opts.fab}" data-date="${opts.fabDate || ''}">＋</button>` : ''}`;
+}
+function sidebar(){
+  const trips = sortedTrips();
+  return `<aside class="sidebar${drawerOpen ? ' open' : ''}">
+    <div class="side-head">
+      <div class="brand-icon">🏔️</div>
+      <div class="brand"><b>行程规划</b><small>TRIP PLANNER</small></div>
+    </div>
+    <button class="side-new" data-action="new-trip">＋ 新建行程</button>
+    <div class="side-list">
+      <div class="side-label"><span>我的行程</span><span>${trips.length}</span></div>
+      ${trips.length ? trips.map(t => {
+        const range = t.startDate
+          ? (t.endDate && t.endDate !== t.startDate ? `${t.startDate.slice(5)} ~ ${t.endDate.slice(5)}` : t.startDate)
+          : '未设置日期';
+        const st = calcStats(t);
+        return `<div class="side-item${view.tripId === t.id ? ' active' : ''}" data-action="open-trip" data-id="${t.id}">
+          <div class="side-item-main">
+            <div class="side-item-title">${esc(t.title)}</div>
+            <div class="side-item-sub">${esc(range)}${st.total ? ' · ' + fmtMoney(st.total) : ''}</div>
+          </div>
+          <button class="side-mini" data-action="copy-trip" data-id="${t.id}" title="复制行程">📋</button>
+          <button class="side-mini" data-action="del-trip-list" data-id="${t.id}" title="删除行程">🗑️</button>
+        </div>`;
+      }).join('') : `<div class="side-empty">还没有行程<br>点击上方按钮新建</div>`}
+    </div>
+    <div class="side-foot">
+      <button class="side-btn" data-action="settings">⚙️ 设置与数据备份</button>
+      <button class="side-btn" data-action="lock">🔒 锁定（重新输入密码）</button>
+    </div>
+  </aside>`;
+}
+
+/* ==================== 首页：行程列表 ==================== */
+function viewList(){
+  const trips = sortedTrips();
+  const totalCost = trips.reduce((s, t) => s + calcStats(t).total, 0);
+  const chips = trips.length
+    ? `<span class="chip-h">共 <b>${trips.length}</b> 个行程</span>
+       ${totalCost ? `<span class="chip-h">预算合计 <b>${fmtMoney(totalCost)}</b></span>` : ''}
+       <span class="chip-h">今天 <b>${todayStr()}</b></span>`
+    : '';
+  let inner;
+  if(!trips.length){
+    inner = `<div class="empty">
+      <div class="empty-icon">🧳</div>
+      <p>还没有行程</p>
+      <p class="small">点击右下角 ＋ 创建第一段旅程</p>
+    </div>`;
+  } else {
+    inner = `<div class="trip-grid">${trips.map(tripCard).join('')}</div>`;
+  }
+  return shell({
+    title: '我的行程',
+    sub: trips.length ? '山水有期，说走就走' : '开启第一段旅程',
+    chips
+  }, inner, { fab:'new-trip' });
+}
+function tripCard(t){
+  const range = t.startDate
+    ? (t.endDate && t.endDate !== t.startDate ? `${t.startDate} ~ ${t.endDate}` : t.startDate)
+    : '未设置日期';
+  const st = calcStats(t);
+  let n = 0;
+  t.items.forEach(it => { if(it.type === 'hotel') n += nights(it); });
+  return `<div class="trip-card">
+    <div class="trip-cover" data-action="open-trip" data-id="${t.id}">
+      ${scenerySvg('c' + t.id)}
+      <div class="trip-cover-date">${esc(range)}</div>
+      <div class="trip-cover-count">${t.items.length} 项</div>
+    </div>
+    <div class="trip-body" data-action="open-trip" data-id="${t.id}">
+      <h2>${esc(t.title)}</h2>
+      <div class="trip-meta">
+        <span class="trip-money">${fmtMoney(st.total)}</span>
+        ${n ? `<span>${n} 晚住宿</span>` : ''}
+        <span>${t.items.length} 项安排</span>
+      </div>
+    </div>
+    <div class="trip-foot">
+      <button class="mini-btn" data-action="export-pdf" data-id="${t.id}">📄 PDF</button>
+      <button class="mini-btn" data-action="copy-trip" data-id="${t.id}">📋 复制</button>
+      <button class="mini-btn" data-action="edit-trip-list" data-id="${t.id}">✏️ 编辑</button>
+      <button class="mini-btn danger" data-action="del-trip-list" data-id="${t.id}">🗑️</button>
+    </div>
+  </div>`;
+}
+
+/* ==================== 日程视图 ==================== */
+const TYPE_SECTIONS = [
+  { key:'transport', icon:'✈️', name:'出行' },
+  { key:'hotel',     icon:'🏨', name:'住宿' },
+  { key:'spot',      icon:'📍', name:'景点' },
+  { key:'other',     icon:'📌', name:'其他' }
+];
+function viewTrip(){
+  const t = getTrip(view.tripId);
+  if(!t){ view = { name:'list', tripId:null }; return viewList(); }
+  const byDate = new Map();
+  t.items.forEach(it => {
+    const k = it.date || '';
+    if(!byDate.has(k)) byDate.set(k, []);
+    byDate.get(k).push(it);
+  });
+  const dateSet = new Set(buildDateRange(t));
+  t.items.forEach(it => { if(it.date) dateSet.add(it.date); });
+  const hasUndated = byDate.has('');
+  const sortedDates = [...dateSet].sort((a, b) => a < b ? -1 : a > b ? 1 : 0);
+  if(hasUndated) sortedDates.push('');
+
+  const range = t.startDate
+    ? (t.endDate && t.endDate !== t.startDate ? `${t.startDate} ~ ${t.endDate}` : t.startDate)
+    : '未设置日期';
+  const st = calcStats(t);
+  let totalNights = 0;
+  t.items.forEach(it => { if(it.type === 'hotel') totalNights += nights(it); });
+
+  const chips = `
+    <span class="chip-h">${esc(range)}</span>
+    <span class="chip-h">安排 <b>${t.items.length}</b> 项</span>
+    ${totalNights ? `<span class="chip-h">住宿 <b>${totalNights}</b> 晚</span>` : ''}
+    <span class="chip-h">预算 <b>${fmtMoney(st.total)}</b></span>`;
+
+  const inner = sortedDates.length
+    ? sortedDates.map(d => renderDaySection(d, byDate.get(d) || [])).join('')
+    : `<div class="empty">
+        <div class="empty-icon">📝</div>
+        <p>还没有安排</p>
+        <p class="small">点击右下角 ＋ 添加第一项</p>
+      </div>`;
+
+  return shell({
+    title: t.title,
+    sub: range,
+    chips,
+    actions: `<button class="hero-btn" data-action="toggle-view" title="切换到清单">📋</button>
+              <button class="hero-btn" data-action="trip-menu" title="更多">⋯</button>`
+  }, inner, { fab:'add-item', fabDate: t.startDate || '' });
+}
+function renderDaySection(date, items){
+  const groups = { transport:[], hotel:[], spot:[], other:[] };
+  items.forEach(it => { if(groups[it.type]) groups[it.type].push(it); });
+  Object.keys(groups).forEach(k => { groups[k].sort(byTime); });
+  const dayCost = items.reduce((s, it) => s + itemCost(it), 0);
+  return `
+  <section class="day-section">
+    <div class="day-head">
+      <span class="day-date">${fmtDate(date)}</span>
+      <span class="day-cost">${dayCost ? '当天 ' + fmtMoney(dayCost) : ''}</span>
+    </div>
+    <div class="day-cards">
+      ${TYPE_SECTIONS.map(sec => {
+        const list = groups[sec.key];
+        return `
+        <div class="type-col">
+          <div class="type-col-head">
+            <span class="type-col-name">${sec.icon} ${sec.name}</span>
+            <button class="type-col-add" data-action="add-item" data-date="${date}" data-type="${sec.key}" title="添加${sec.name}">＋</button>
+          </div>
+          <div class="type-col-body">
+            ${list.length ? list.map(miniItem).join('') : `<div class="type-col-empty">暂无</div>`}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  </section>`;
+}
+function miniItem(it){
+  const cls = it.type;
+  if(it.type === 'transport'){
+    const route = it.from && it.to ? `${it.from}→${it.to}` : (it.to || it.from || '待定');
+    const sub = [it.time, it.mode].filter(Boolean).join(' · ');
+    return `<div class="mini-item ${cls}" data-action="edit-item" data-id="${it.id}">
+      <div class="mini-title">${esc(route)}</div>
+      ${sub ? `<div class="mini-sub">${esc(sub)}</div>` : ''}
+    </div>`;
+  }
+  if(it.type === 'hotel'){
+    const title = it.title || it.city || '住宿';
+    const parts = [nights(it) + '晚'];
+    if(it.breakfast === 'yes')     parts.push('含早');
+    else if(it.breakfast === 'no') parts.push('无早');
+    const sub = parts.join(' · ');
+    return `<div class="mini-item ${cls}" data-action="edit-item" data-id="${it.id}">
+      <div class="mini-title">${esc(title)}</div>
+      ${sub ? `<div class="mini-sub">${esc(sub)}</div>` : ''}
+    </div>`;
+  }
+  if(it.type === 'spot'){
+    const sub = [it.time, it.address].filter(Boolean).join(' · ');
+    return `<div class="mini-item ${cls}" data-action="edit-item" data-id="${it.id}">
+      <div class="mini-title">${esc(it.title || '景点')}</div>
+      ${sub ? `<div class="mini-sub">${esc(sub)}</div>` : ''}
+    </div>`;
+  }
+  const sub = [it.time, it.note].filter(Boolean).join(' · ');
+  return `<div class="mini-item ${cls}" data-action="edit-item" data-id="${it.id}">
+    <div class="mini-title">${esc(it.title || '其他')}</div>
+    ${sub ? `<div class="mini-sub">${esc(sub)}</div>` : ''}
+  </div>`;
+}
+
+/* ==================== 清单视图 ==================== */
+function viewSummary(){
+  const t = getTrip(view.tripId);
+  if(!t){ view = { name:'list', tripId:null }; return viewList(); }
+  const stats = calcStats(t);
+  const map = new Map();
+  t.items.forEach(it => {
+    const k = it.date || '';
+    if(!map.has(k)) map.set(k, []);
+    map.get(k).push(it);
+  });
+  const keys = [...map.keys()].sort((a,b) => !a ? 1 : !b ? -1 : (a < b ? -1 : a > b ? 1 : 0));
+  let totalNights = 0;
+  t.items.forEach(it => { if(it.type === 'hotel') totalNights += nights(it); });
+  const range = t.startDate
+    ? (t.endDate && t.endDate !== t.startDate ? `${t.startDate} ~ ${t.endDate}` : t.startDate)
+    : '未设置日期';
+  const breakdown = [['出行', stats.transport], ['住宿', stats.hotel], ['景点', stats.spot], ['其他', stats.other]]
+    .filter(x => x[1] > 0);
+
+  const inner = `
+    <div class="summary-head">
+      <div class="summary-total">${fmtMoney(stats.total)}<small>预计总费用</small></div>
+      ${breakdown.length ? `<div class="summary-breakdown">
+        ${breakdown.map(([k,v]) => `<span>${k} <b>${fmtMoney(v)}</b></span>`).join('')}
+      </div>` : ''}
+      <div class="summary-meta">
+        <span>${esc(range)}</span>
+        <span>${t.items.length} 项安排</span>
+        ${totalNights ? `<span>${totalNights} 晚住宿</span>` : ''}
+      </div>
+      <div class="summary-actions">
+        <button class="btn primary" style="flex:1" data-action="export-pdf">📄 导出 PDF</button>
+        <button class="btn" style="flex:1" data-action="copy-text">📋 复制文本</button>
+      </div>
+    </div>
+    ${keys.length ? keys.map(k => {
+      const list = map.get(k).slice().sort(byTime);
+      const dayCost = list.reduce((s, it) => s + itemCost(it), 0);
+      return `<section class="day-group">
+        <div class="day-group-head">
+          <span>${fmtDate(k)}</span>
+          ${dayCost > 0 ? `<span class="cost">${fmtMoney(dayCost)}</span>` : ''}
+        </div>
+        ${list.map(summaryRow).join('')}
+      </section>`;
+    }).join('') : `<div class="empty"><div class="empty-icon">📋</div><p>还没有安排</p></div>`}`;
+
+  return shell({
+    title: t.title,
+    sub: range + ' · 费用清单',
+    chips: `<span class="chip-h">合计 <b>${fmtMoney(stats.total)}</b></span>
+            <span class="chip-h">安排 <b>${t.items.length}</b> 项</span>`,
+    actions: `<button class="hero-btn" data-action="toggle-view" title="切换到日程">📅</button>
+              <button class="hero-btn" data-action="trip-menu" title="更多">⋯</button>`
+  }, inner);
+}
+function summaryRow(it){
+  const cost = itemCost(it);
+  let title = '', detail = '';
+  if(it.type === 'transport'){
+    title = `${it.from || '待定'} → ${it.to || '待定'}`;
+    detail = [it.mode, it.no, it.distance, it.duration].filter(Boolean).join(' · ');
+    if(it.orderNo) detail += (detail ? ' · ' : '') + '订单号 ' + it.orderNo;
+    if(it.note)    detail += (detail ? ' · ' : '') + it.note;
+  } else if(it.type === 'hotel'){
+    title = it.title || '住宿';
+    detail = [
+      it.city,
+      nights(it) + ' 晚',
+      it.breakfast === 'yes' ? '含早餐' : it.breakfast === 'no' ? '不含早餐' : '',
+      it.pricePerNight ? fmtMoney(it.pricePerNight) + '/晚' : ''
+    ].filter(Boolean).join(' · ');
+    if(it.orderNo) detail += (detail ? ' · ' : '') + '订单号 ' + it.orderNo;
+  } else {
+    title = it.title || TYPE_LABEL[it.type];
+    detail = [it.address, it.note].filter(Boolean).join(' · ');
+  }
+  return `<div class="list-row">
+    <div class="list-time">${esc(it.time || '—')}</div>
+    <div class="list-icon">${itemIcon(it)}</div>
+    <div class="list-main">
+      <p class="list-title">${esc(title)}</p>
+      ${detail ? `<p class="list-detail">${esc(detail)}</p>` : ''}
+    </div>
+    ${cost > 0 ? `<div class="list-cost">${fmtMoney(cost)}</div>` : ''}
+  </div>`;
+}
+function itemIcon(it){
+  if(it.type === 'transport'){
+    return it.mode === '飞机' ? '✈️' : it.mode === '火车' ? '🚄'
+         : it.mode === '汽车' ? '🚌' : it.mode === '自驾' ? '🚗' : '🧭';
+  }
+  if(it.type === 'hotel') return '🏨';
+  if(it.type === 'spot')  return '📍';
+  return '📌';
+}
+
+/* ==================== 复制为文本 ==================== */
+function formatItemLine(it){
+  const time = it.time || '——';
+  const cost = itemCost(it);
+  const costStr = cost ? '  ' + fmtMoney(cost) : '';
+  if(it.type === 'transport'){
+    const route = `${it.from || '?'} → ${it.to || '?'}`;
+    const detail = [it.mode, it.no].filter(Boolean).join(' ');
+    let s = `${time}  ✈️ ${route}`;
+    if(detail) s += `  (${detail})`;
+    if(it.distance || it.duration) s += `\n        ${[it.distance, it.duration].filter(Boolean).join(' · ')}`;
+    if(it.orderNo) s += `\n        订单号 ${it.orderNo}`;
+    return s + costStr;
+  }
+  if(it.type === 'hotel'){
+    const title = it.title || '住宿';
+    const extras = [
+      nights(it) + '晚',
+      it.breakfast === 'yes' ? '含早' : it.breakfast === 'no' ? '无早' : '',
+      it.pricePerNight ? fmtMoney(it.pricePerNight) + '/晚' : ''
+    ].filter(Boolean).join(' · ');
+    let s = `${time}  🏨 ${title}`;
+    if(extras) s += `  (${extras})`;
+    if(it.city) s += `\n        ${it.city}`;
+    if(it.orderNo) s += `\n        订单号 ${it.orderNo}`;
+    return s + costStr;
+  }
+  if(it.type === 'spot'){
+    const title = it.title || '景点';
+    let s = `${time}  📍 ${title}`;
+    if(it.address) s += `\n        ${it.address}`;
+    return s + costStr;
+  }
+  return `${time}  📌 ${it.title || '其他'}${costStr}`;
+}
+function buildTripText(t){
+  if(!t) return '';
+  const lines = [];
+  const st = calcStats(t);
+  lines.push('📋 ' + t.title);
+  const range = t.startDate
+    ? (t.endDate && t.endDate !== t.startDate ? `${t.startDate} ~ ${t.endDate}` : t.startDate)
+    : '未设置日期';
+  lines.push(range);
+  lines.push(`共 ${t.items.length} 项安排 · 预计 ${fmtMoney(st.total)}`);
+  lines.push('');
+  const byDate = new Map();
+  t.items.forEach(it => {
+    const k = it.date || '';
+    if(!byDate.has(k)) byDate.set(k, []);
+    byDate.get(k).push(it);
+  });
+  const keys = [...byDate.keys()].sort((a,b) => !a ? 1 : !b ? -1 : (a < b ? -1 : a > b ? 1 : 0));
+  keys.forEach(k => {
+    const list = byDate.get(k).slice().sort(byTime);
+    const dayCost = list.reduce((s, it) => s + itemCost(it), 0);
+    lines.push(`【${fmtDate(k)}】${dayCost ? ' 当日 ' + fmtMoney(dayCost) : ''}`);
+    list.forEach(it => lines.push('  ' + formatItemLine(it)));
+    lines.push('');
+  });
+  const bd = [['出行', st.transport], ['住宿', st.hotel], ['景点', st.spot], ['其他', st.other]]
+    .filter(x => x[1] > 0).map(([k,v]) => `${k} ${fmtMoney(v)}`).join('  |  ');
+  if(bd) lines.push(bd);
+  lines.push(`总计 ${fmtMoney(st.total)}`);
+  return lines.join('\n');
+}
+
+/* ==================== PDF 导出 ==================== */
+function buildPrintHTML(t){
+  const st = calcStats(t);
+  const map = new Map();
+  t.items.forEach(it => {
+    const k = it.date || '';
+    if(!map.has(k)) map.set(k, []);
+    map.get(k).push(it);
+  });
+  const keys = [...map.keys()].sort((a,b) => !a ? 1 : !b ? -1 : (a < b ? -1 : a > b ? 1 : 0));
+  const range = t.startDate
+    ? (t.endDate && t.endDate !== t.startDate ? `${t.startDate} ~ ${t.endDate}` : t.startDate)
+    : '未设置日期';
+  let totalNights = 0;
+  t.items.forEach(it => { if(it.type === 'hotel') totalNights += nights(it); });
+  const bd = [['出行', st.transport], ['住宿', st.hotel], ['景点', st.spot], ['其他', st.other]]
+    .filter(x => x[1] > 0)
+    .map(([k,v]) => `<span>${k} <b>${fmtMoney(v)}</b></span>`).join('');
+
+  const days = keys.length ? keys.map(k => {
+    const list = map.get(k).slice().sort(byTime);
+    const dayCost = list.reduce((s, it) => s + itemCost(it), 0);
+    return `<div class="pdf-day">
+      <div class="pdf-day-head">
+        <b>${esc(fmtDate(k))}</b>
+        ${dayCost > 0 ? `<span>当日 ${fmtMoney(dayCost)}</span>` : ''}
+      </div>
+      ${list.map(it => {
+        let title = '', detail = '';
+        if(it.type === 'transport'){
+          title = `${it.from || '待定'} → ${it.to || '待定'}`;
+          detail = [it.mode, it.no, it.distance, it.duration].filter(Boolean).join(' · ');
+          if(it.orderNo) detail += (detail ? ' · ' : '') + '订单号 ' + it.orderNo;
+          if(it.note)    detail += (detail ? ' · ' : '') + it.note;
+        } else if(it.type === 'hotel'){
+          title = it.title || it.city || '住宿';
+          detail = [
+            it.city, nights(it) + ' 晚',
+            it.breakfast === 'yes' ? '含早餐' : it.breakfast === 'no' ? '不含早餐' : '',
+            it.pricePerNight ? fmtMoney(it.pricePerNight) + '/晚' : ''
+          ].filter(Boolean).join(' · ');
+          if(it.orderNo) detail += (detail ? ' · ' : '') + '订单号 ' + it.orderNo;
+        } else {
+          title = it.title || TYPE_LABEL[it.type];
+          detail = [it.address, it.note].filter(Boolean).join(' · ');
+        }
+        const cost = itemCost(it);
+        return `<div class="pdf-row">
+          <div class="pdf-time">${esc(it.time || '—')}</div>
+          <div class="pdf-ico">${itemIcon(it)}</div>
+          <div class="pdf-main">
+            <div class="pdf-title">${esc(title)}</div>
+            ${detail ? `<div class="pdf-detail">${esc(detail)}</div>` : ''}
+          </div>
+          ${cost > 0 ? `<div class="pdf-cost">${fmtMoney(cost)}</div>` : ''}
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('') : `<div class="pdf-empty">暂无行程安排</div>`;
+
+  return `<div class="pdf-doc">
+    <div class="pdf-brand">🧭 行 程 规 划 · TRIP PLANNER</div>
+    <h1>${esc(t.title)}</h1>
+    <div class="pdf-meta">${esc(range)} · 共 ${t.items.length} 项安排${totalNights ? ' · ' + totalNights + ' 晚住宿' : ''}</div>
+    <div class="pdf-summary">
+      <div class="pdf-total"><span>预计总费用</span><b>${fmtMoney(st.total)}</b></div>
+      ${bd ? `<div class="pdf-bd">${bd}</div>` : ''}
+    </div>
+    ${days}
+    ${t.note ? `<div class="pdf-day"><div class="pdf-day-head"><b>备注</b></div>
+      <div class="pdf-detail" style="font-size:12px">${esc(t.note)}</div></div>` : ''}
+    <div class="pdf-foot">
+      <span>导出时间：${todayStr()}</span>
+      <span>由「行程规划」生成 · 费用为预估金额，仅供参考</span>
+    </div>
+  </div>`;
+}
+function loadScript(src){
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src; s.async = true;
+    s.onload = resolve; s.onerror = () => reject(new Error('load fail'));
+    document.head.appendChild(s);
+  });
+}
+async function ensurePdfLib(){
+  if(window.html2pdf) return true;
+  const cdn = [
+    'https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js',
+    'https://unpkg.com/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js'
+  ];
+  for(const url of cdn){
+    try { await loadScript(url); } catch(e){}
+    if(window.html2pdf) return true;
+  }
+  return false;
+}
+async function exportPDF(tripId){
+  const t = getTrip(tripId || view.tripId);
+  if(!t){ toast('没有可导出的行程'); return; }
+  const root = $('#print-root');
+  root.innerHTML = buildPrintHTML(t);
+  toast('正在生成 PDF…');
+  const ok = await ensurePdfLib();
+  if(ok){
+    try {
+      await window.html2pdf().set({
+        margin: [10, 8, 10, 8],
+        filename: `行程规划-${t.title}-${todayStr()}.pdf`,
+        image: { type:'jpeg', quality:0.98 },
+        html2canvas: { scale:2, useCORS:true, backgroundColor:'#ffffff', windowWidth:794 },
+        jsPDF: { unit:'mm', format:'a4', orientation:'portrait' },
+        pagebreak: { mode:['avoid-all','css'] }
+      }).from(root).save();
+      toast('PDF 已下载');
+      return;
+    } catch(e){
+      console.warn('html2pdf 失败，回退打印', e);
+    }
+  }
+  toast('已打开打印窗口，选择「另存为 PDF」即可');
+  setTimeout(() => window.print(), 320);
+}
+
+/* ==================== 高德地图 ====================
+   统一走高德官方 URI（uri.amap.com）：
+   · 填了坐标 → navigation 路线规划，能真正开始导航
+   · 没坐标   → search 关键字搜索，纯中文地名也能带过去
+   官方 URI 带 callnative=1 时手机浏览器会自行唤起高德 APP，
+   所以「网页打开」这条路同样能把 APP 叫起来。            */
+function amapRoute(it){
+  if(!it) return null;
+  if(it.type === 'transport'){
+    if(!it.to) return null;
+    return { from: it.from || '', to: it.to, city: '' };
+  }
+  if(it.type === 'hotel'){
+    const to = it.title || it.city || '';
+    if(!to) return null;
+    return { from: '', to: to, city: it.city || '' };
+  }
+  if(it.type === 'spot'){
+    const to = it.title || it.address || '';
+    if(!to) return null;
+    return { from: '', to: to, city: '' };
+  }
+  if(it.title) return { from: '', to: it.title, city: '' };
+  return null;
+}
+/* 解析 "121.47,31.23" 这类坐标，自动判断经纬顺序 */
+function parseGeo(s){
+  if(!s) return null;
+  const m = String(s).match(/(-?\d+(?:\.\d+)?)\s*[,，\s]\s*(-?\d+(?:\.\d+)?)/);
+  if(!m) return null;
+  const a = parseFloat(m[1]), b = parseFloat(m[2]);
+  if(isNaN(a) || isNaN(b)) return null;
+  return (a >= 70 && a <= 140 && b >= 0 && b <= 60) ? { lng:a, lat:b } : { lng:b, lat:a };
+}
+function amapModeName(mode){ return { car:'car', walk:'walk', ride:'ride' }[mode] || 'car'; }
+function amapModeCode(mode){ return { car:'0', walk:'2', ride:'3' }[mode] || '0'; }
+
+function buildAmapWebUrl(it, mode){
+  const r = amapRoute(it);
+  if(!r || !r.to) return '';
+  const enc = encodeURIComponent;
+  const g = parseGeo(it && it.geo);
+  if(g){
+    return 'https://uri.amap.com/navigation?' + [
+      'to=' + g.lng + ',' + g.lat + ',' + enc(r.to),
+      'mode=' + amapModeName(mode),
+      'policy=1',
+      'coordinate=gaode',
+      'src=' + enc('行程规划'),
+      'callnative=1'
+    ].join('&');
+  }
+  const p = ['keyword=' + enc(r.to)];
+  if(r.city) p.push('city=' + enc(r.city));
+  p.push('src=' + enc('行程规划'), 'callnative=1');
+  return 'https://uri.amap.com/search?' + p.join('&');
+}
+function buildAmapAppUrl(it, mode){
+  const r = amapRoute(it);
+  if(!r || !r.to) return '';
+  const enc = encodeURIComponent;
+  const g = parseGeo(it && it.geo);
+  if(env().ios){
+    if(g){
+      return 'iosamap://path?sourceApplication=' + enc('行程规划')
+           + '&dlat=' + g.lat + '&dlon=' + g.lng + '&dname=' + enc(r.to)
+           + '&dev=0&t=' + amapModeCode(mode);
+    }
+    return 'iosamap://search?keyword=' + enc(r.to);
+  }
+  if(g){
+    return 'amapuri://route/plan/?sourceApplication=' + enc('行程规划')
+         + '&dlat=' + g.lat + '&dlon=' + g.lng + '&dname=' + enc(r.to)
+         + '&dev=0&t=' + amapModeCode(mode);
+  }
+  return 'amapuri://search?keyword=' + enc(r.to);
+}
+function openAmap(itemId, mode){
+  const trip = getTrip(view.tripId);
+  const it = trip && trip.items.find(i => i.id === itemId);
+  if(!it) return;
+  const webUrl = buildAmapWebUrl(it, mode);
+  const appUrl = buildAmapAppUrl(it, mode);
+  if(!webUrl && !appUrl){ toast('没有可导航的地名'); return; }
+  launchApp({ appUrl: appUrl, webUrl: webUrl, pkg: PKG_AMAP });
+}
+
+/* ==================== 携程 ==================== */
+const CTRIP_HOME = {
+  flight:'https://m.ctrip.com/webapp/flightactivity/muse/index.html',
+  train:'https://m.ctrip.com/webapp/train/',
+  hotel:'https://m.ctrip.com/webapp/hotel/'
+};
+function ctripHome(kind){ return CTRIP_HOME[kind] || CTRIP_HOME.hotel; }
+function buildCtripWebUrl(it){
+  const s = DB.settings;
+  const enc = encodeURIComponent;
+  if(!it) return '';
+  if(it.type === 'transport'){
+    const isFlight = it.mode === '飞机';
+    const isTrain  = it.mode === '火车';
+    const tpl = isFlight ? s.flightTpl : isTrain ? s.trainTpl : '';
+    const home = isFlight ? CTRIP_HOME.flight : CTRIP_HOME.train;
+    if(!tpl) return home;
+    if(!it.from || !it.to) return home;
+    return tpl.replace(/\{from\}/g, enc(it.from || ''))
+              .replace(/\{to\}/g,   enc(it.to || ''))
+              .replace(/\{date\}/g, enc(it.date || ''));
+  }
+  if(it.type === 'hotel'){
+    if(!it.city) return CTRIP_HOME.hotel;
+    return s.hotelTpl.replace(/\{city\}/g,     enc(it.city || ''))
+                     .replace(/\{checkIn\}/g,  enc(it.checkIn || it.date || ''))
+                     .replace(/\{checkOut\}/g, enc(it.checkOut || ''));
+  }
+  return '';
+}
+/* 携程 APP 内部路由（ctrip:// 协议）。即便路由失效 APP 也会落到首页，
+   所以查询条件另外靠剪贴板传递，双保险。 */
+function ctripAppPath(it){
+  const enc = encodeURIComponent;
+  if(!it) return 'wireless';
+  if(it.type === 'hotel'){
+    const q = [];
+    if(it.city)     q.push('city=' + enc(it.city));
+    if(it.checkIn)  q.push('checkin=' + enc(it.checkIn));
+    if(it.checkOut) q.push('checkout=' + enc(it.checkOut));
+    return 'wireless/hotel' + (q.length ? '?' + q.join('&') : '');
+  }
+  if(it.type === 'transport'){
+    const q = [];
+    if(it.from) q.push('from=' + enc(it.from));
+    if(it.to)   q.push('to=' + enc(it.to));
+    if(it.date) q.push('date=' + enc(it.date));
+    return 'wireless/' + (it.mode === '火车' ? 'train' : 'flight') + (q.length ? '?' + q.join('&') : '');
+  }
+  return 'wireless';
+}
+/* 携程 APP 唤起协议，默认 ctrip://。个别机型/定制 ROM 若换了协议可在设置里改 */
+function ctripScheme(){
+  let v = (DB.settings && DB.settings.ctripScheme) || 'ctrip://';
+  v = String(v).trim();
+  if(!v) v = 'ctrip://';
+  if(!/:\/\/$/.test(v)) v = v.replace(/\/+$/, '') + '://';
+  return v;
+}
+function buildCtripAppUrl(it){ return ctripScheme() + ctripAppPath(it); }
+
+/* 一段纯文本：携程 APP 打开时会读剪贴板并自动识别，网页带不进参数就靠它 */
+function ctripQueryText(it){
+  if(!it) return '';
+  if(it.type === 'transport'){
+    const seg = [it.from, it.to].filter(Boolean).join(' → ');
+    return [seg, it.date, it.mode === '火车' ? '火车票' : '机票'].filter(Boolean).join('  ');
+  }
+  if(it.type === 'hotel'){
+    return [it.city || it.title, it.checkIn, it.checkOut].filter(Boolean).join('  ');
+  }
+  return it.title || '';
+}
+
+/* 唤起携程：Android 依次尝试各包名的 intent → 无包名 intent → 裸 ctrip://
+   iOS 直接用 ctrip:// 。全部失败后弹提示条，不自动开网页。 */
+function launchCtrip(it, webUrl){
+  const E = env();
+  const url  = webUrl || buildCtripWebUrl(it);
+  const path = ctripAppPath(it);
+  const steps = [];
+  const sch  = ctripScheme();
+  const bare = sch.replace('://', '');
+  if(E.android){
+    /* 先按包名精确匹配；都落空就用不带包名的 intent，并挂上网页兜底，
+       这样「没装携程」的情况会直接打开网页，不用干等 */
+    PKG_CTRIP.forEach(function(pkg){ steps.push(buildIntent(bare, path, pkg, '')); });
+    steps.push(buildIntent(bare, path, '', url));
+    steps.push(sch + path);
+  } else {
+    steps.push(sch + path);
+    steps.push(sch);
+  }
+  const txt = ctripQueryText(it);
+  if(txt) copyText(txt).then(
+    function(){ toast('查询条件已复制：' + txt); },
+    function(){}
+  );
+  launchApp({
+    steps: steps, webUrl: url, fallback: 'ask',
+    gap: E.android ? 900 : 1500,
+    tipTitle: '没能唤起携程 APP',
+    tipText: '查询条件已放进剪贴板。若已安装携程，可手动打开它——携程通常会自动识别剪贴板里的行程信息；也可以直接用网页查询。',
+    tipCopy: txt || ''
+  });
+}
+function openCtrip(itemId){
+  const trip = getTrip(view.tripId);
+  const it = trip && trip.items.find(i => i.id === itemId);
+  if(!it) return;
+  launchCtrip(it);
+}
+
+/* ==================== 备份 ==================== */
+function exportData(){
+  const blob = new Blob([JSON.stringify(DB, null, 2)], { type:'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `行程备份-${todayStr()}.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+}
+
+/* ==================== 弹窗 ==================== */
+function renderModal(){
+  const root = $('#modal-root');
+  if(!modal){ root.innerHTML = ''; return; }
+  if(modal.kind === 'item')          root.innerHTML = modalItem();
+  else if(modal.kind === 'trip')     root.innerHTML = modalTrip();
+  else if(modal.kind === 'settings') root.innerHTML = modalSettings();
+  else if(modal.kind === 'menu')     root.innerHTML = modalMenu();
+  else if(modal.kind === 'nav')      root.innerHTML = modalNav();
+  else if(modal.kind === 'ctrip')    root.innerHTML = modalCtrip();
+  else root.innerHTML = '';
+}
+/* 把面板里填的坐标存回条目（已保存的条目 / 正在编辑的表单），下次直接能用 */
+function saveNavGeo(it, navModal){
+  if(!it) return;
+  const el = document.getElementById('navGeo');
+  if(!el) return;
+  const g = parseGeo(el.value);
+  if(!g) return;
+  it.geo = g.lng + ',' + g.lat;
+  /* 从卡片打开的：写回已保存的条目 */
+  const t = getTrip(view.tripId);
+  const real = t && t.items.find(i => i.id === it.id);
+  if(real && real !== it){ real.geo = it.geo; save(); }
+  /* 从编辑表单打开的：写回表单正在编辑的条目 */
+  const back = navModal && navModal.backModal;
+  if(back && back.item && back.item !== it) back.item.geo = it.geo;
+}
+/* 携程面板里填的内容同步回条目表单 */
+function syncCtripToItem(prev, target, v){
+  if(!prev || prev.kind !== 'item') return;
+  if(!prev.item) prev.item = { type: target === 'hotel' ? 'hotel' : 'transport' };
+  const it = prev.item;
+  if(target === 'hotel'){
+    it.type = 'hotel';
+    it.city = v.city;
+    if(v.checkIn)  it.checkIn  = v.checkIn;
+    if(v.checkOut) it.checkOut = v.checkOut;
+  } else {
+    it.type = 'transport';
+    if(!it.mode) it.mode = v.mode;
+    it.from = v.from;
+    it.to   = v.to;
+    if(v.date) it.date = v.date;
+  }
+}
+
+/* ===== 高德导航面板 ===== */
+function modalNav(){
+  let it = null;
+  if(modal.tempItem) it = modal.tempItem;
+  else if(modal.itemId){
+    const t = getTrip(view.tripId);
+    it = t && t.items.find(i => i.id === modal.itemId);
+  }
+  if(!it) return '';
+  const r = amapRoute(it);
+  if(!r) return '';
+  const mode = modal.navMode || 'car';
+  const title = r.from ? r.from + ' → ' + r.to : r.to;
+  const E = env();
+  const g = parseGeo(it.geo);
+
+  let warn = '';
+  if(!E.mobile)            warn = '电脑上只能打开高德网页版；用手机访问本页可直接唤起高德 APP。';
+  else if(E.wechat)        warn = '微信内置浏览器禁止跳转其他 APP，请点「网页打开」，或点右上角 ⋯ → 在浏览器中打开。';
+  else if(E.standalone)    warn = '当前是全屏窗口模式；若唤起失败请用「网页打开」，高德网页版同样会拉起 APP。';
+
+  return `
+  <div class="modal-mask">
+    <div class="sheet">
+      <div class="sheet-head">
+        <button data-action="close-modal">取消</button>
+        <h3>高德地图</h3>
+        <span style="width:44px"></span>
+      </div>
+      <div class="sheet-body">
+        <div class="muted small" style="margin-bottom:10px;word-break:break-word">${esc(title)}</div>
+        ${g
+          ? '<div class="hint" style="margin:0 0 14px;color:#15803d">已存坐标 ' + esc(it.geo) + '，可直接规划路线</div>'
+          : '<div class="hint" style="margin:0 0 14px">未填坐标：会按名称在高德里搜索该地点，填一次就会记住。</div>'}
+
+        <div class="field">
+          <label>终点坐标（可选，经度,纬度）</label>
+          <div class="row" style="gap:8px">
+            <input type="text" id="navGeo" value="${esc(it.geo || '')}"
+              placeholder="121.4737,31.2304" style="flex:1">
+            <button type="button" class="btn" data-action="nav-locate"
+              style="flex:0 0 auto;white-space:nowrap">📍 当前位置</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>出行方式</label>
+          <div class="seg">
+            <button type="button" class="seg-btn ${mode === 'car'  ? 'active' : ''}" data-navmode="car">🚗 驾车</button>
+            <button type="button" class="seg-btn ${mode === 'walk' ? 'active' : ''}" data-navmode="walk">🚶 步行</button>
+            <button type="button" class="seg-btn ${mode === 'ride' ? 'active' : ''}" data-navmode="ride">🚴 骑行</button>
+          </div>
+        </div>
+
+        <button class="nav-option" style="background:#e8f5e9;border-color:#a5d6a7"
+          data-action="amap-go" data-mode="${mode}" data-id="${it.id || ''}">
+          <span class="nav-icon">🧭</span>
+          <span class="nav-label">打开高德 APP
+            <div class="nav-sub">${E.android
+              ? '通过系统 intent 唤起，未安装自动打开网页'
+              : '唤起高德 APP，未安装自动打开网页'}</div>
+          </span>
+        </button>
+        <button class="nav-option" data-action="amap-web" data-mode="${mode}" data-id="${it.id || ''}">
+          <span class="nav-icon">🌐</span>
+          <span class="nav-label">用网页打开
+            <div class="nav-sub">高德官方网页版，同样会尝试拉起 APP</div>
+          </span>
+        </button>
+        <button class="nav-option" data-action="amap-copy" data-id="${it.id || ''}">
+          <span class="nav-icon">📋</span>
+          <span class="nav-label">复制目的地
+            <div class="nav-sub">再粘到高德 / 百度地图的搜索框</div>
+          </span>
+        </button>
+        ${warn ? '<div class="hint" style="margin-top:14px">⚠️ ' + esc(warn) + '</div>' : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ===== 携程填写面板 ===== */
+function formGroupVals(target){
+  const form = $('#item-form');
+  const get = n => {
+    if(!form) return '';
+    const g = form.querySelector('[data-group="' + target + '"]');
+    let e2 = g && g.querySelector('[name="' + n + '"]');
+    if(!e2) e2 = form.querySelector('[name="' + n + '"]');
+    return e2 ? e2.value.trim() : '';
+  };
+  if(target === 'hotel'){
+    return { city:get('city'), checkIn:get('checkIn') || get('date'), checkOut:get('checkOut') };
+  }
+  return { mode:get('mode') || '飞机', from:get('from'), to:get('to'), date:get('date') };
+}
+function readCtripInputs(target){
+  const g = id => { const e = document.getElementById(id); return e ? (e.value || '').trim() : ''; };
+  if(target === 'hotel'){
+    const city = g('ctCity'), checkIn = g('ctIn'), checkOut = g('ctOut');
+    return { city: city, checkIn: checkIn, checkOut: checkOut,
+             item: { type:'hotel', city: city, checkIn: checkIn, checkOut: checkOut } };
+  }
+  const mode = g('ctMode') || '飞机';
+  const from = g('ctFrom'), to = g('ctTo'), date = g('ctDate');
+  return { mode: mode, from: from, to: to, date: date,
+           item: { type:'transport', mode: mode, from: from, to: to, date: date } };
+}
+function modalCtrip(){
+  const cfg = modal.ctrip || {};
+  const v = cfg.v || {};
+  const isHotel = cfg.target === 'hotel';
+  const E = env();
+
+  let warn = '';
+  if(!E.mobile)         warn = '电脑上只能打开携程网页版；用手机访问本页可直接唤起携程 APP。';
+  else if(E.wechat)     warn = '微信内置浏览器禁止跳转其他 APP，请点「网页打开」，或点右上角 ⋯ → 在浏览器中打开。';
+  else if(E.standalone) warn = '当前是全屏窗口模式；若唤起失败请用「网页打开」。';
+
+  const how = E.android ? 'intent(ctrip://) → ctrip://'
+            : E.ios     ? 'ctrip://'
+            : '直接打开网页';
+
+  return `
+  <div class="modal-mask">
+    <div class="sheet">
+      <div class="sheet-head">
+        <button data-action="ctrip-back">返回</button>
+        <h3>${isHotel ? '携程 · 订酒店' : '携程 · 查机票/火车票'}</h3>
+        <span style="width:44px"></span>
+      </div>
+      <div class="sheet-body">
+        ${isHotel ? `
+        <div class="field"><label>城市 / 目的地</label>
+          <input type="text" id="ctCity" value="${esc(v.city || '')}" placeholder="如：上海"></div>
+        <div class="row">
+          <div class="field"><label>入住</label>
+            <input type="date" id="ctIn" value="${esc(v.checkIn || '')}"></div>
+          <div class="field"><label>退房</label>
+            <input type="date" id="ctOut" value="${esc(v.checkOut || '')}"></div>
+        </div>` : `
+        <div class="field"><label>查询类型</label>
+          <select id="ctMode">
+            <option value="飞机" ${(v.mode || '飞机') === '飞机' ? 'selected' : ''}>机票</option>
+            <option value="火车" ${v.mode === '火车' ? 'selected' : ''}>火车票</option>
+          </select></div>
+        <div class="row">
+          <div class="field"><label>出发地</label>
+            <input type="text" id="ctFrom" value="${esc(v.from || '')}" placeholder="如：哈尔滨"></div>
+          <div class="field"><label>目的地</label>
+            <input type="text" id="ctTo" value="${esc(v.to || '')}" placeholder="如：上海"></div>
+        </div>
+        <div class="field"><label>出发日期</label>
+          <input type="date" id="ctDate" value="${esc(v.date || '')}"></div>`}
+
+        <button class="nav-option" style="background:#e0f2fe;border-color:#7dd3fc"
+          data-action="ctrip-open">
+          <span class="nav-icon">📱</span>
+          <span class="nav-label">打开携程 APP
+            <div class="nav-sub">${E.android
+              ? '系统 intent 逐个尝试携程包名，失败会提示你'
+              : '唤起携程 APP，失败会提示你'}</div>
+          </span>
+        </button>
+        <button class="nav-option" data-action="ctrip-web">
+          <span class="nav-icon">🌐</span>
+          <span class="nav-label">用网页打开
+            <div class="nav-sub">带上这里填写的条件打开携程 H5</div>
+          </span>
+        </button>
+        <button class="nav-option" data-action="ctrip-copy">
+          <span class="nav-icon">📋</span>
+          <span class="nav-label">复制查询条件
+            <div class="nav-sub">携程 APP 打开后会自动识别剪贴板</div>
+          </span>
+        </button>
+        <button class="nav-option" data-action="ctrip-home">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">携程首页
+            <div class="nav-sub">不带条件，直接进携程对应频道</div>
+          </span>
+        </button>
+
+        <div class="hint" style="margin-top:14px">
+          填写的内容会同步回上面的表单。若携程网页没自动带出地点，请点「复制查询条件」再打开携程 APP——它会读取剪贴板自动识别。
+        </div>
+        ${warn ? '<div class="hint" style="margin-top:10px">⚠️ ' + esc(warn) + '</div>' : ''}
+        <div class="hint" style="margin-top:10px;opacity:.7">
+          当前环境：${esc(envLabel())}　唤起方式：${esc(how)}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function modalItem(){
+  const it = modal.item || {};
+  const type = it.type || modal.presetType || 'transport';
+  const date = it.date || modal.presetDate || '';
+  const isEdit = !!modal.item;
+  const numVal = v => (v === 0 || v === undefined || v === null || v === '') ? '' : String(v);
+
+  let cityVal = it.city || '';
+  let checkInVal = it.checkIn || '';
+  let checkOutVal = it.checkOut || '';
+  if(type === 'hotel'){
+    if(!cityVal || !checkInVal){
+      const guess = guessArrival(getTrip(view.tripId));
+      if(!cityVal)    cityVal    = guess.city;
+      if(!checkInVal) checkInVal = guess.date || date || '';
+    }
+    if(checkInVal && (!checkOutVal || checkOutVal <= checkInVal)) checkOutVal = addDays(checkInVal, 1);
+  }
+  let fromVal = it.from || '';
+  if(type === 'transport' && !fromVal && date){
+    const guess = guessDeparture(getTrip(view.tripId), date);
+    if(guess) fromVal = guess;
+  }
+
+  return `<div class="modal-mask">
+    <div class="sheet">
+      <div class="sheet-head">
+        <button data-action="close-modal">取消</button>
+        <h3>${isEdit ? '编辑安排' : '添加安排'}</h3>
+        <button class="primary-text" data-action="save-item">保存</button>
+      </div>
+      <form class="sheet-body" id="item-form" onsubmit="return false">
+        <input type="hidden" name="type" value="${type}">
+        <input type="hidden" name="id" value="${it.id || ''}">
+
+        <div class="field">
+          <label>类型</label>
+          <div class="seg">
+            ${[['transport','出行'],['hotel','住宿'],['spot','景点'],['other','其他']]
+              .map(([v,l]) => `<button type="button" class="seg-btn ${type===v?'active':''}" data-settype="${v}">${l}</button>`)
+              .join('')}
+          </div>
+        </div>
+        <div class="row">
+          <div class="field"><label>日期</label>
+            <input type="date" name="date" value="${date}"></div>
+          <div class="field"><label>时间</label>
+            <input type="time" name="time" value="${it.time || ''}"></div>
+        </div>
+
+        <div data-group="transport" class="${type==='transport'?'':'hidden'}">
+          <div class="field">
+            <label>交通方式</label>
+            <select name="mode">
+              ${['飞机','火车','汽车','自驾','其他']
+                .map(m => `<option ${it.mode===m?'selected':''}>${m}</option>`).join('')}
+            </select>
+          </div>
+          <div class="row">
+            <div class="field"><label>出发地</label>
+              <input type="text" name="from" value="${esc(fromVal)}" placeholder="哈尔滨"></div>
+            <div class="field"><label>目的地</label>
+              <input type="text" name="to" value="${esc(it.to||'')}" placeholder="上海"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>路程距离</label>
+              <input type="text" name="distance" value="${esc(it.distance||'')}" placeholder="1850 公里"></div>
+            <div class="field"><label>预计用时</label>
+              <input type="text" name="duration" value="${esc(it.duration||'')}" placeholder="3小时20分"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>航班/车次</label>
+              <input type="text" name="no" value="${esc(it.no||'')}" placeholder="可选"></div>
+            <div class="field"><label>费用（元）</label>
+              <input type="number" name="cost" value="${numVal(it.cost)}" placeholder="1200" step="0.01" min="0"></div>
+          </div>
+          <div class="field"><label>订单号</label>
+            <input type="text" name="orderNo" value="${esc(it.orderNo||'')}" placeholder="可选"></div>
+          <div class="app-btn-row">
+            <button type="button" class="ctrip-btn" data-action="ctrip-form" data-target="transport">✈️ 携程查询</button>
+            <button type="button" class="map-btn" data-action="amap-form" data-target="transport">🧭 高德导航</button>
+          </div>
+          <div class="ctrip-hint">优先唤起携程 / 高德 APP，未安装则打开网页版</div>
+        </div>
+
+        <div data-group="hotel" class="${type==='hotel'?'':'hidden'}">
+          <div class="field"><label>城市</label>
+            <input type="text" name="city" value="${esc(cityVal)}" placeholder="上海"></div>
+          <div class="field"><label>酒店名称</label>
+            <input type="text" name="hotelName" value="${esc(it.title||'')}" placeholder="外滩某酒店"></div>
+          <div class="row">
+            <div class="field"><label>入住</label>
+              <input type="date" name="checkIn" value="${checkInVal}"></div>
+            <div class="field"><label>退房</label>
+              <input type="date" name="checkOut" value="${checkOutVal}"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>每晚价格（元）</label>
+              <input type="number" name="pricePerNight" value="${numVal(it.pricePerNight)}" placeholder="590" step="0.01" min="0"></div>
+            <div class="field"><label>早餐</label>
+              <select name="breakfast">
+                <option value=""    ${!it.breakfast ? 'selected' : ''}>未标注</option>
+                <option value="yes" ${it.breakfast==='yes' ? 'selected' : ''}>含早餐</option>
+                <option value="no"  ${it.breakfast==='no'  ? 'selected' : ''}>不含早餐</option>
+              </select></div>
+          </div>
+          <div class="field"><label>订单号</label>
+            <input type="text" name="orderNo" value="${esc(it.orderNo||'')}"></div>
+          <div class="app-btn-row">
+            <button type="button" class="ctrip-btn" data-action="ctrip-form" data-target="hotel">🏨 携程订酒店</button>
+            <button type="button" class="map-btn" data-action="amap-form" data-target="hotel">🧭 高德导航</button>
+          </div>
+          <div class="ctrip-hint">优先唤起携程 / 高德 APP，未安装则打开网页版</div>
+        </div>
+
+        <div data-group="spot" class="${type==='spot'?'':'hidden'}">
+          <div class="field"><label>景点名称</label>
+            <input type="text" name="spotName" value="${esc(it.title||'')}" placeholder="外滩"></div>
+          <div class="field"><label>地址</label>
+            <input type="text" name="address" value="${esc(it.address||'')}" placeholder="可选"></div>
+          <div class="field"><label>费用（元）</label>
+            <input type="number" name="cost" value="${numVal(it.cost)}" placeholder="门票等，可选" step="0.01" min="0"></div>
+          <button type="button" class="map-btn" style="width:100%;padding:11px"
+            data-action="amap-form" data-target="spot">🧭 打开高德地图导航</button>
+          <div class="ctrip-hint">按景点名称唤起高德 APP，未安装则打开网页版</div>
+        </div>
+
+        <div data-group="other" class="${type==='other'?'':'hidden'}">
+          <div class="field"><label>标题</label>
+            <input type="text" name="otherTitle" value="${esc(it.title||'')}" placeholder="取租车"></div>
+          <div class="field"><label>费用（元）</label>
+            <input type="number" name="cost" value="${numVal(it.cost)}" placeholder="可选" step="0.01" min="0"></div>
+        </div>
+
+        <div class="field">
+          <label>备注</label>
+          <textarea name="note" placeholder="可选">${esc(it.note||'')}</textarea>
+        </div>
+        <div class="hint">
+          提示：出行的出发地按当天之前的最近住宿城市自动填；住宿城市按到达目的地自动填；
+          保存出行后，会把它目的地补到「之后、下一个出行之前」的空城市住宿里。
+        </div>
+      </form>
+    </div>
+  </div>`;
+}
+function modalTrip(){
+  const t = modal.trip || {};
+  return `<div class="modal-mask">
+    <div class="sheet">
+      <div class="sheet-head">
+        <button data-action="close-modal">取消</button>
+        <h3>${modal.trip ? '编辑行程' : '新建行程'}</h3>
+        <button class="primary-text" data-action="save-trip">保存</button>
+      </div>
+      <form class="sheet-body" id="trip-form" onsubmit="return false">
+        <input type="hidden" name="id" value="${t.id || ''}">
+        <div class="field"><label>行程名称</label>
+          <input type="text" name="title" value="${esc(t.title||'')}" placeholder="上海五日游"></div>
+        <div class="row">
+          <div class="field"><label>出发日期</label>
+            <input type="date" name="startDate" value="${t.startDate||''}"></div>
+          <div class="field"><label>返程日期</label>
+            <input type="date" name="endDate" value="${t.endDate||''}"></div>
+        </div>
+        <div class="field"><label>备注</label>
+          <textarea name="note">${esc(t.note||'')}</textarea></div>
+      </form>
+    </div>
+  </div>`;
+}
+function modalSettings(){
+  const s = DB.settings;
+  return `<div class="modal-mask">
+    <div class="sheet">
+      <div class="sheet-head">
+        <button data-action="close-modal">关闭</button>
+        <h3>设置</h3>
+        <button class="primary-text" data-action="save-settings">保存</button>
+      </div>
+      <div class="sheet-body">
+        <div class="field">
+          <label>机票跳转链接模板</label>
+          <textarea name="flightTpl">${esc(s.flightTpl)}</textarea>
+        </div>
+        <div class="field">
+          <label>火车票跳转链接模板</label>
+          <textarea name="trainTpl">${esc(s.trainTpl)}</textarea>
+        </div>
+        <div class="field">
+          <label>酒店跳转链接模板</label>
+          <textarea name="hotelTpl">${esc(s.hotelTpl)}</textarea>
+        </div>
+        <div class="field">
+          <label>携程 APP 唤起协议</label>
+          <input type="text" name="ctripScheme" value="${esc(s.ctripScheme || 'ctrip://')}" placeholder="ctrip://">
+        </div>
+        <div class="hint">
+          可用变量：{from} {to} {date} {city} {checkIn} {checkOut}。<br>
+          打开方式：手机上优先唤起携程 APP（Android 用系统 intent、iOS 用 ctrip://），
+          没装或唤起失败会自动打开网页版。<br>
+          若携程网页没自动带出地点（携程 H5 参数随时会变），
+          可在携程 APP 里搜一次后「分享 → 复制链接」，把这里的模板换成你拿到的真实链接；
+          也可以直接用面板里的「复制查询条件」，携程 APP 打开时会读剪贴板自动识别。<br>
+          唤起协议默认 <b>ctrip://</b>，Android 会依次尝试携程的两个包名
+          （ctrip.android.view / com.ctrip.android.view）。若你的机型仍唤不起来，
+          可修改上面的「携程 APP 唤起协议」试试别的写法。
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:18px 0">
+        <div class="field">
+          <label>数据备份（手机 / 电脑之间同步）</label>
+          <div class="row" style="gap:10px">
+            <button class="btn" style="flex:1;padding:10px" data-action="export">导出 JSON</button>
+            <button class="btn" style="flex:1;padding:10px" data-action="import">导入 JSON</button>
+          </div>
+          <input type="file" id="import-file" accept="application/json" class="hidden">
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:18px 0">
+        <div class="field">
+          <label>访问密码</label>
+          <div class="row" style="gap:10px">
+            <button class="btn" style="flex:1;padding:10px" data-action="lock">🔒 立即锁定</button>
+          </div>
+          <div class="hint">当前固定密码为 <b>8888</b>，勾选「记住登录」后 7 天内免密进入。</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function modalMenu(){
+  return `<div class="modal-mask">
+    <div class="sheet">
+      <div class="sheet-head">
+        <span style="width:40px"></span>
+        <h3>行程操作</h3>
+        <button data-action="close-modal">关闭</button>
+      </div>
+      <div class="sheet-body">
+        <button class="btn" style="width:100%;padding:12px" data-action="edit-trip">✏️ 编辑行程信息</button>
+        <div style="height:8px"></div>
+        <button class="btn" style="width:100%;padding:12px" data-action="copy-text">📋 复制为文本</button>
+        <div style="height:8px"></div>
+        <button class="btn" style="width:100%;padding:12px" data-action="export-pdf">📄 导出 PDF 文档</button>
+        <div style="height:8px"></div>
+        <button class="btn danger" style="width:100%;padding:12px" data-action="del-trip">🗑️ 删除整个行程</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ==================== 保存逻辑 ==================== */
+function collectItem(){
+  const form = $('#item-form');
+  const type = (form.querySelector('[name="type"]') || {}).value || 'other';
+  const group = form.querySelector(`[data-group="${type}"]`);
+  const val = n => {
+    let el = group && group.querySelector(`[name="${n}"]`);
+    if(!el) el = form.querySelector(`[name="${n}"]`);
+    return el ? el.value.trim() : '';
+  };
+  const num = n => {
+    const f = parseFloat(val(n));
+    return (isNaN(f) || f < 0) ? 0 : f;
+  };
+  const base = { id: val('id') || uid(), type, date: val('date'), time: val('time'), note: val('note') };
+  if(type === 'transport'){
+    return { ...base, mode: val('mode'), from: val('from'), to: val('to'),
+             distance: val('distance'), duration: val('duration'),
+             no: val('no'), orderNo: val('orderNo'), cost: num('cost') };
+  }
+  if(type === 'hotel'){
+    const checkIn = val('checkIn');
+    return { ...base, date: checkIn || base.date, city: val('city'), title: val('hotelName'),
+             checkIn, checkOut: val('checkOut'), pricePerNight: num('pricePerNight'),
+             breakfast: val('breakfast'), orderNo: val('orderNo') };
+  }
+  if(type === 'spot'){
+    return { ...base, title: val('spotName'), address: val('address'), cost: num('cost') };
+  }
+  return { ...base, title: val('otherTitle'), cost: num('cost') };
+}
+function saveItem(){
+  const data = collectItem();
+  const trip = getTrip(view.tripId);
+  if(!trip) return;
+  const idx = trip.items.findIndex(i => i.id === data.id);
+  if(idx >= 0) trip.items[idx] = data; else trip.items.push(data);
+  if(data.type === 'transport') backfillHotelCities(trip, data);
+  save(); modal = null; render();
+  toast('已保存');
+}
+function saveTrip(){
+  const form = $('#trip-form');
+  const val = n => (form.querySelector(`[name="${n}"]`) || {}).value || '';
+  const id = val('id');
+  const data = {
+    title: val('title').trim() || '未命名行程',
+    startDate: val('startDate'), endDate: val('endDate'), note: val('note').trim()
+  };
+  if(id) Object.assign(getTrip(id), data);
+  else DB.trips.push({ id: uid(), createdAt: Date.now(), items: [], ...data });
+  save(); modal = null; render();
+}
+function saveSettings(){
+  const body = document.querySelector('.sheet-body');
+  const val = n => (body.querySelector(`[name="${n}"]`) || {}).value || '';
+  DB.settings.flightTpl = val('flightTpl').trim();
+  DB.settings.trainTpl  = val('trainTpl').trim();
+  DB.settings.hotelTpl  = val('hotelTpl').trim();
+  DB.settings.ctripScheme = (val('ctripScheme').trim() || 'ctrip://');
+  save(); modal = null; renderModal();
+  toast('设置已保存');
+}
+
+/* ==================== 全局 change ==================== */
+document.addEventListener('change', e => {
+  if(e.target.name === 'checkIn' && e.target.closest('#item-form')){
+    const form = $('#item-form');
+    const checkOut = form.querySelector('[name=checkOut]');
+    if(checkOut){
+      const newIn = e.target.value, curOut = checkOut.value;
+      if(newIn && (!curOut || curOut <= newIn)) checkOut.value = addDays(newIn, 1);
+    }
+    return;
+  }
+  if(e.target.name === 'date' && e.target.closest('#item-form')){
+    const form = $('#item-form');
+    const type = (form.querySelector('[name=type]') || {}).value;
+    if(type === 'transport'){
+      const fromEl = form.querySelector('[name=from]');
+      if(fromEl && !fromEl.value){
+        const guess = guessDeparture(getTrip(view.tripId), e.target.value);
+        if(guess) fromEl.value = guess;
+      }
+    }
+    return;
+  }
+  if(e.target.id !== 'import-file') return;
+  const f = e.target.files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const d = JSON.parse(r.result);
+      if(!d.trips) throw new Error('文件格式不正确');
+      if(!confirm('导入将覆盖当前全部数据，确定继续？')) return;
+      DB = Object.assign(DEFAULTS(), d, { settings: Object.assign(DEFAULTS().settings, d.settings || {}) });
+      save(); modal = null; view = { name:'list', tripId:null }; render();
+      alert('导入成功');
+    } catch(err){ alert('导入失败：' + err.message); }
+  };
+  r.readAsText(f);
+  e.target.value = '';
+});
+
+/* ==================== 事件 ==================== */
+document.addEventListener('click', e => {
+  if(e.target.classList && e.target.classList.contains('modal-mask')){
+    modal = null; renderModal(); return;
+  }
+  const el = e.target.closest('[data-action],[data-settype],[data-navmode]');
+  if(!el) return;
+
+  if(el.dataset.navmode){
+    modal.navMode = el.dataset.navmode;
+    renderModal();
+    return;
+  }
+
+  if(el.dataset.settype){
+    const form = $('#item-form');
+    const t = el.dataset.settype;
+    form.querySelector('[name=type]').value = t;
+    form.querySelectorAll('.seg-btn').forEach(b => b.classList.toggle('active', b === el));
+    form.querySelectorAll('[data-group]').forEach(g => g.classList.toggle('hidden', g.dataset.group !== t));
+    if(t === 'hotel'){
+      const guess = guessArrival(getTrip(view.tripId));
+      const cityEl = form.querySelector('[name=city]');
+      const checkInEl = form.querySelector('[name=checkIn]');
+      const checkOutEl = form.querySelector('[name=checkOut]');
+      if(cityEl && !cityEl.value && guess.city) cityEl.value = guess.city;
+      if(checkInEl && !checkInEl.value && guess.date) checkInEl.value = guess.date;
+      if(checkOutEl && !checkOutEl.value && checkInEl.value) checkOutEl.value = addDays(checkInEl.value, 1);
+    }
+    if(t === 'transport'){
+      const dateEl = form.querySelector('[name=date]');
+      const fromEl = form.querySelector('[name=from]');
+      if(fromEl && !fromEl.value && dateEl && dateEl.value){
+        const guess = guessDeparture(getTrip(view.tripId), dateEl.value);
+        if(guess) fromEl.value = guess;
+      }
+    }
+    return;
+  }
+
+  const a  = el.dataset.action;
+  const id = el.dataset.id;
+
+  switch(a){
+    case 'open-drawer':  toggleDrawer(true); break;
+    case 'close-drawer': toggleDrawer(false); break;
+    case 'lock':         modal = null; renderModal(); lockApp(); break;
+
+    case 'open-trip':   view = { name:'trip', tripId:id }; render(); break;
+    case 'back':        view = { name:'list', tripId:null }; render(); break;
+    case 'toggle-view': view.name = view.name === 'trip' ? 'summary' : 'trip'; render(); break;
+
+    case 'new-trip':  modal = { kind:'trip' }; renderModal(); break;
+    case 'edit-trip': modal = { kind:'trip', trip:getTrip(view.tripId) }; renderModal(); break;
+
+    case 'copy-trip': {
+      const t = getTrip(id);
+      if(!t) break;
+      const copy = JSON.parse(JSON.stringify(t));
+      copy.id = uid();
+      copy.title = t.title + ' 副本';
+      copy.createdAt = Date.now();
+      copy.items = (copy.items || []).map(it => ({ ...it, id: uid() }));
+      DB.trips.push(copy);
+      save(); render(); toast('已复制行程');
+      break;
+    }
+    case 'edit-trip-list':
+      modal = { kind:'trip', trip:getTrip(id) }; renderModal(); break;
+
+    case 'del-trip-list': {
+      const trip = getTrip(id);
+      if(!trip) break;
+      if(!confirm(`确定删除行程「${trip.title}」？此操作不可撤销。`)) break;
+      DB.trips = DB.trips.filter(t => t.id !== id);
+      save();
+      if(view.tripId === id) view = { name:'list', tripId:null };
+      render();
+      break;
+    }
+    case 'trip-menu': modal = { kind:'menu' }; renderModal(); break;
+    case 'settings':  modal = { kind:'settings' }; renderModal(); break;
+    case 'close-modal': modal = null; renderModal(); break;
+
+    case 'add-item':
+      modal = { kind:'item', presetDate: el.dataset.date || '', presetType: el.dataset.type || '' };
+      renderModal(); break;
+
+    case 'edit-item': {
+      const t = getTrip(view.tripId);
+      modal = { kind:'item', item: t.items.find(i => i.id === id) };
+      renderModal(); break;
+    }
+    case 'del-item': {
+      if(!confirm('确定删除这项安排？')) return;
+      const t = getTrip(view.tripId);
+      t.items = t.items.filter(i => i.id !== id);
+      save(); render(); break;
+    }
+    case 'save-item': saveItem(); break;
+    case 'save-trip': saveTrip(); break;
+
+    case 'del-trip': {
+      if(!confirm('确定删除整个行程？此操作不可撤销。')) return;
+      DB.trips = DB.trips.filter(t => t.id !== view.tripId);
+      save(); modal = null; view = { name:'list', tripId:null }; render();
+      break;
+    }
+    case 'save-settings': saveSettings(); break;
+    case 'ctrip': openCtrip(id); break;
+
+    /* 表单里的携程按钮：先打开填写面板，可直接输入出发地 / 目的地 / 城市 */
+    case 'ctrip-form': {
+      const target = el.dataset.target;
+      const prev = modal;
+      modal = {
+        kind:'ctrip',
+        ctrip: { target, v: formGroupVals(target) },
+        back: prev
+      };
+      renderModal();
+      break;
+    }
+    /* 返回上一个表单 */
+    case 'ctrip-back': {
+      modal = (modal && modal.back) || null;
+      renderModal();
+      break;
+    }
+    /* ===== 携程 ===== */
+    case 'ctrip-home': {
+      const cfg = modal && modal.ctrip;
+      const kind = cfg && cfg.target === 'hotel' ? 'hotel'
+                 : (cfg && cfg.v && cfg.v.mode === '火车') ? 'train' : 'flight';
+      openUrl(ctripHome(kind));
+      break;
+    }
+    case 'ctrip-copy': {
+      const cfg = modal && modal.ctrip;
+      if(!cfg) break;
+      const v = readCtripInputs(cfg.target);
+      const txt = ctripQueryText(v.item);
+      if(!txt){ toast('还没有填写查询条件'); break; }
+      copyText(txt).then(() => toast('已复制：' + txt),
+                         () => toast('复制失败，请手动记录'));
+      break;
+    }
+    case 'ctrip-web':
+    case 'ctrip-open': {
+      const cfg = modal && modal.ctrip;
+      if(!cfg) break;
+      const prev = modal.back;
+      const v = readCtripInputs(cfg.target);
+      syncCtripToItem(prev, cfg.target, v);
+      const webUrl = buildCtripWebUrl(v.item);
+      const appUrl = buildCtripAppUrl(v.item);
+      modal = prev || null;
+      renderModal();
+      if(a === 'ctrip-open'){
+        /* 先把查询条件放进剪贴板：携程 APP 启动后会读剪贴板自动识别 */
+        const txt = ctripQueryText(v.item);
+        if(txt) copyText(txt).then(() => toast('已复制查询条件，携程会自动识别'),
+                                   () => {});
+        launchCtrip(v.item, webUrl);
+      } else {
+        openUrl(webUrl || ctripHome(cfg.target === 'hotel' ? 'hotel'
+                  : (v.mode === '火车' ? 'train' : 'flight')));
+      }
+      break;
+    }
+
+    /* ===== 唤起失败提示条 ===== */
+    case 'tip-web':
+      openUrl(el.dataset.url || '');
+      hideLaunchTip();
+      break;
+    case 'tip-copy': {
+      const box = document.getElementById('launch-tip');
+      const txt = box && box._text;
+      if(txt) copyText(txt).then(() => toast('已复制：' + txt), () => toast('复制失败'));
+      break;
+    }
+    case 'tip-close':
+      hideLaunchTip();
+      break;
+
+    /* ===== 高德 ===== */
+    case 'amap-form': {
+      const form = $('#item-form');
+      if(!form) break;
+      const get = n => {
+        const grp = form.querySelector('[data-group="' + el.dataset.target + '"]');
+        let e2 = grp && grp.querySelector('[name="' + n + '"]');
+        if(!e2) e2 = form.querySelector('[name="' + n + '"]');
+        return e2 ? e2.value.trim() : '';
+      };
+      const target = el.dataset.target;
+      let tempItem = null;
+      if(target === 'transport'){
+        const from = get('from'), to = get('to');
+        if(!to){ toast('请先填写目的地'); break; }
+        tempItem = { type:'transport', from: from, to: to };
+      } else if(target === 'hotel'){
+        const title = get('hotelName'), city = get('city');
+        if(!title && !city){ toast('请先填写酒店名称或城市'); break; }
+        tempItem = { type:'hotel', title: title, city: city };
+      } else if(target === 'spot'){
+        const title = get('spotName'), address = get('address');
+        if(!title && !address){ toast('请先填写景点名称或地址'); break; }
+        tempItem = { type:'spot', title: title, address: address };
+      }
+      if(!tempItem) break;
+      modal = { kind:'nav', tempItem: tempItem, navMode:'car', backModal: modal };
+      renderModal();
+      break;
+    }
+    case 'amap': {
+      const t = getTrip(view.tripId);
+      const it = t && t.items.find(i => i.id === id);
+      if(!it) break;
+      if(!amapRoute(it)){ toast('没有可导航的地名'); break; }
+      modal = { kind:'nav', itemId: id, navMode:'car' };
+      renderModal();
+      break;
+    }
+    case 'amap-go':
+    case 'amap-web': {
+      const mode = el.dataset.mode || 'car';
+      let it = null;
+      if(modal && modal.tempItem) it = modal.tempItem;
+      else if(id){
+        const t = getTrip(view.tripId);
+        it = t && t.items.find(i => i.id === id);
+      }
+      if(!it) break;
+      saveNavGeo(it, modal);
+      modal = null; renderModal();
+      const webUrl = buildAmapWebUrl(it, mode);
+      const appUrl = buildAmapAppUrl(it, mode);
+      if(!webUrl && !appUrl){ toast('无法生成导航链接'); break; }
+      if(a === 'amap-go') launchApp({ appUrl: appUrl, webUrl: webUrl, pkg: PKG_AMAP });
+      else                openUrl(webUrl || appUrl);
+      break;
+    }
+    case 'amap-copy': {
+      let it = null;
+      if(modal && modal.tempItem) it = modal.tempItem;
+      else if(id){
+        const t = getTrip(view.tripId);
+        it = t && t.items.find(i => i.id === id);
+      }
+      const r = it && amapRoute(it);
+      if(!r || !r.to){ toast('没有可复制的地名'); break; }
+      copyText(r.to).then(() => toast('已复制：' + r.to),
+                          () => toast('复制失败，请手动记录'));
+      break;
+    }
+    case 'nav-locate': {
+      if(!navigator.geolocation){ toast('此设备不支持定位'); break; }
+      toast('正在定位…');
+      navigator.geolocation.getCurrentPosition(pos => {
+        const box = document.getElementById('navGeo');
+        if(box){
+          box.value = pos.coords.longitude.toFixed(6) + ',' + pos.coords.latitude.toFixed(6);
+          toast('已填入当前位置，点「打开高德 APP」即可规划路线');
+        }
+      }, () => toast('定位失败，请检查定位权限'),
+         { enableHighAccuracy:true, timeout:10000, maximumAge:60000 });
+      break;
+    }
+    case 'copy-text': {
+      const t = getTrip(view.tripId);
+      if(!t) break;
+      copyText(buildTripText(t)).then(() => {
+        alert('已复制到剪贴板\n\n可直接粘贴到微信、备忘录或发给同行的人');
+      }).catch(() => alert('复制失败，请手动选择文本'));
+      break;
+    }
+    case 'export-pdf': exportPDF(id); break;
+    case 'export': exportData(); break;
+    case 'import': $('#import-file').click(); break;
+  }
+});
+
+/* ==================== 启动 ==================== */
+$('#pwd-go').addEventListener('click', tryLogin);
+$('#pwd').addEventListener('keydown', e => { if(e.key === 'Enter') tryLogin(); });
+$('#pwd-eye').addEventListener('click', () => {
+  const i = $('#pwd');
+  i.type = i.type === 'password' ? 'text' : 'password';
+  $('#pwd-eye').textContent = i.type === 'password' ? '👁️' : '🔒';
+});
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && modal){ modal = null; renderModal(); } });
+
+if(checkAuth()){
+  $('#login').classList.add('hidden');
+  render();
+} else {
+  showLogin();
+}
+
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "行程规划",
+  "short_name": "行程",
+  "description": "个人出游行程规划：日期、出行、景点、住宿、费用，支持 PDF 导出",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#e0f2fe",
+  "theme_color": "#0284c7",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
