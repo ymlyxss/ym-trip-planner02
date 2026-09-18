@@ -771,6 +771,7 @@ function tryLogin(){
     const el = $('#login');
     el.classList.add('out');
     setTimeout(() => el.classList.add('hidden'), 280);
+    seedTripOnce();
     if(!$('#app').innerHTML.trim()) render();
   } else {
     $('#pwd-err').textContent = '密码不正确，请重试';
@@ -2018,6 +2019,12 @@ function modalSettings(){
           </div>
           <input type="file" id="import-file" accept="application/json" class="hidden">
         </div>
+        <div class="field">
+          <label>内置行程</label>
+          <button class="btn" style="width:100%;justify-content:center;padding:10px"
+            data-action="reseed">重新载入「2026中秋出行」</button>
+          <div class="hint">误删后可点这里恢复内置的 2026 中秋行程（会覆盖同名行程）。</div>
+        </div>
         <hr style="border:none;border-top:1px solid var(--border);margin:18px 0">
         <div class="field">
           <label>访问密码</label>
@@ -2435,10 +2442,349 @@ document.addEventListener('click', e => {
       break;
     }
     case 'export-pdf': exportPDF(id); break;
+    case 'reseed': reseedTrip(); break;
     case 'export': exportData(); break;
     case 'import': $('#import-file').click(); break;
   }
 });
+
+/* ==================== 内置种子行程 ==================== */
+/* 来自 2026中秋计划.xlsx；首次打开自动导入一次，删除后不会重新出现 */
+const SEED_KEY = STORE_KEY + '.seed.2026midautumn';
+const SEED_TRIP = {
+  "title": "2026中秋出行",
+  "startDate": "2026-09-25",
+  "endDate": "2026-10-07",
+  "note": "数据来源：2026中秋计划.xlsx。原表日期为 2025 年，已顺延一年对齐 2026 年中秋（9/25 为中秋节）。",
+  "items": [
+    {
+      "type": "transport",
+      "date": "2026-09-25",
+      "time": "",
+      "mode": "自驾",
+      "from": "哈尔滨",
+      "to": "长白山",
+      "distance": "584 公里",
+      "duration": "6小时7分",
+      "no": "",
+      "orderNo": "",
+      "cost": 0,
+      "note": ""
+    },
+    {
+      "type": "hotel",
+      "date": "2026-09-25",
+      "time": "",
+      "city": "长白山",
+      "title": "长白山希尔顿",
+      "checkIn": "2026-09-25",
+      "checkOut": "2026-09-27",
+      "pricePerNight": 1116.5,
+      "breakfast": "yes",
+      "orderNo": "",
+      "note": "分晚价格：09/25 995、09/26 1238"
+    },
+    {
+      "type": "spot",
+      "date": "2026-09-26",
+      "time": "",
+      "title": "长白山",
+      "address": "",
+      "cost": 0,
+      "note": ""
+    },
+    {
+      "type": "other",
+      "date": "2026-09-26",
+      "time": "",
+      "title": "路途费用",
+      "cost": 3200.0,
+      "note": "表格「路途费用」列（包车 / 租车 / 过路费等）"
+    },
+    {
+      "type": "transport",
+      "date": "2026-09-27",
+      "time": "",
+      "mode": "自驾",
+      "from": "长白山",
+      "to": "丹东",
+      "distance": "526 公里",
+      "duration": "6小时34分",
+      "no": "",
+      "orderNo": "",
+      "cost": 0,
+      "note": ""
+    },
+    {
+      "type": "hotel",
+      "date": "2026-09-27",
+      "time": "",
+      "city": "丹东",
+      "title": "丹东锦禾酒店",
+      "checkIn": "2026-09-27",
+      "checkOut": "2026-09-28",
+      "pricePerNight": 539.0,
+      "breakfast": "yes",
+      "orderNo": "",
+      "note": ""
+    },
+    {
+      "type": "transport",
+      "date": "2026-09-28",
+      "time": "",
+      "mode": "自驾",
+      "from": "丹东",
+      "to": "绿江村",
+      "distance": "202 公里",
+      "duration": "4小时32分",
+      "no": "",
+      "orderNo": "",
+      "cost": 0,
+      "note": ""
+    },
+    {
+      "type": "hotel",
+      "date": "2026-09-28",
+      "time": "",
+      "city": "绿江村",
+      "title": "绿江湾民宿",
+      "checkIn": "2026-09-28",
+      "checkOut": "2026-09-29",
+      "pricePerNight": 520.0,
+      "breakfast": "yes",
+      "orderNo": "",
+      "note": ""
+    },
+    {
+      "type": "transport",
+      "date": "2026-09-29",
+      "time": "",
+      "mode": "自驾",
+      "from": "绿江村",
+      "to": "集安",
+      "distance": "110 公里",
+      "duration": "2小时18分",
+      "no": "",
+      "orderNo": "",
+      "cost": 0,
+      "note": ""
+    },
+    {
+      "type": "hotel",
+      "date": "2026-09-29",
+      "time": "",
+      "city": "集安",
+      "title": "集安和悦酒店",
+      "checkIn": "2026-09-29",
+      "checkOut": "2026-09-30",
+      "pricePerNight": 410.0,
+      "breakfast": "yes",
+      "orderNo": "",
+      "note": ""
+    },
+    {
+      "type": "transport",
+      "date": "2026-09-30",
+      "time": "",
+      "mode": "自驾",
+      "from": "集安",
+      "to": "本溪关门山",
+      "distance": "211 公里 + 70 公里",
+      "duration": "2:58 + 1:06",
+      "no": "",
+      "orderNo": "",
+      "cost": 0,
+      "note": ""
+    },
+    {
+      "type": "hotel",
+      "date": "2026-09-30",
+      "time": "",
+      "city": "本溪",
+      "title": "无界乐活水楼度假民宿",
+      "checkIn": "2026-09-30",
+      "checkOut": "2026-10-01",
+      "pricePerNight": 737.0,
+      "breakfast": "yes",
+      "orderNo": "",
+      "note": ""
+    },
+    {
+      "type": "transport",
+      "date": "2026-10-01",
+      "time": "",
+      "mode": "自驾",
+      "from": "关门山",
+      "to": "小市镇",
+      "distance": "21 公里",
+      "duration": "23分",
+      "no": "",
+      "orderNo": "",
+      "cost": 0,
+      "note": ""
+    },
+    {
+      "type": "hotel",
+      "date": "2026-10-01",
+      "time": "",
+      "city": "本溪",
+      "title": "本溪县小小宾馆",
+      "checkIn": "2026-10-01",
+      "checkOut": "2026-10-02",
+      "pricePerNight": 429.0,
+      "breakfast": "yes",
+      "orderNo": "",
+      "note": ""
+    },
+    {
+      "type": "transport",
+      "date": "2026-10-02",
+      "time": "",
+      "mode": "自驾",
+      "from": "小市镇",
+      "to": "盘锦红海滩",
+      "distance": "270 公里",
+      "duration": "3小时13分",
+      "no": "",
+      "orderNo": "",
+      "cost": 0,
+      "note": ""
+    },
+    {
+      "type": "hotel",
+      "date": "2026-10-02",
+      "time": "",
+      "city": "盘锦",
+      "title": "盘锦昆仑大酒店",
+      "checkIn": "2026-10-02",
+      "checkOut": "2026-10-04",
+      "pricePerNight": 618.0,
+      "breakfast": "yes",
+      "orderNo": "",
+      "note": ""
+    },
+    {
+      "type": "spot",
+      "date": "2026-10-03",
+      "time": "",
+      "title": "鼎翔生态旅游区",
+      "address": "",
+      "cost": 0,
+      "note": ""
+    },
+    {
+      "type": "spot",
+      "date": "2026-10-03",
+      "time": "",
+      "title": "辽河湿地国家公园",
+      "address": "",
+      "cost": 0,
+      "note": ""
+    },
+    {
+      "type": "transport",
+      "date": "2026-10-04",
+      "time": "",
+      "mode": "自驾",
+      "from": "盘锦",
+      "to": "锦州",
+      "distance": "139 公里",
+      "duration": "3小时1分",
+      "no": "",
+      "orderNo": "",
+      "cost": 0,
+      "note": ""
+    },
+    {
+      "type": "spot",
+      "date": "2026-10-04",
+      "time": "",
+      "title": "笔架山",
+      "address": "",
+      "cost": 0,
+      "note": "经停"
+    },
+    {
+      "type": "hotel",
+      "date": "2026-10-04",
+      "time": "",
+      "city": "锦州",
+      "title": "锦州希尔顿花园",
+      "checkIn": "2026-10-04",
+      "checkOut": "2026-10-06",
+      "pricePerNight": 830.0,
+      "breakfast": "yes",
+      "orderNo": "",
+      "note": "分晚价格：10/04 894、10/05 766"
+    },
+    {
+      "type": "transport",
+      "date": "2026-10-06",
+      "time": "",
+      "mode": "自驾",
+      "from": "锦州",
+      "to": "铁岭",
+      "distance": "286 公里",
+      "duration": "3小时10分",
+      "no": "",
+      "orderNo": "",
+      "cost": 0,
+      "note": ""
+    },
+    {
+      "type": "hotel",
+      "date": "2026-10-06",
+      "time": "",
+      "city": "铁岭",
+      "title": "铁岭希尔顿欢朋",
+      "checkIn": "2026-10-06",
+      "checkOut": "2026-10-07",
+      "pricePerNight": 541.0,
+      "breakfast": "",
+      "orderNo": "",
+      "note": ""
+    },
+    {
+      "type": "transport",
+      "date": "2026-10-07",
+      "time": "",
+      "mode": "自驾",
+      "from": "铁岭",
+      "to": "哈尔滨",
+      "distance": "492 公里",
+      "duration": "4小时51分",
+      "no": "",
+      "orderNo": "",
+      "cost": 0,
+      "note": ""
+    }
+  ]
+};
+function seedTripOnce(){
+  try {
+    if(localStorage.getItem(SEED_KEY)) return false;
+    if(DB.trips.some(t => t.title === SEED_TRIP.title)){
+      localStorage.setItem(SEED_KEY, '1'); return false;
+    }
+    const t = JSON.parse(JSON.stringify(SEED_TRIP));
+    t.id = uid();
+    t.createdAt = Date.now();
+    t.items.forEach(it => { it.id = uid(); });
+    DB.trips.push(t);
+    save();
+    localStorage.setItem(SEED_KEY, '1');
+    return true;
+  } catch(e){ return false; }
+}
+function reseedTrip(){
+  try {
+    DB.trips = DB.trips.filter(t => t.title !== SEED_TRIP.title);
+    localStorage.removeItem(SEED_KEY);
+    const ok = seedTripOnce();
+    modal = null; view = { name:'list', tripId:null }; render();
+    toast(ok ? '已重新载入内置行程「2026中秋出行」' : '内置行程已存在或载入失败');
+  } catch(e){ toast('载入失败'); }
+}
 
 /* ==================== 启动 ==================== */
 $('#pwd-go').addEventListener('click', tryLogin);
@@ -2452,6 +2798,7 @@ document.addEventListener('keydown', e => { if(e.key === 'Escape' && modal){ mod
 
 if(checkAuth()){
   $('#login').classList.add('hidden');
+  seedTripOnce();
   render();
 } else {
   showLogin();
